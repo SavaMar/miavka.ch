@@ -9,6 +9,7 @@ import ArticleTableOfContents from "@/components/articles/ArticleTableOfContents
 import ArticlePrevNext from "@/components/articles/ArticlePrevNext";
 import {
   DEFAULT_LANG,
+  SUPPORTED_LANGS,
   type ArticleSection,
   type Lang,
   articleDetailPath,
@@ -20,8 +21,17 @@ import {
 } from "@/lib/articles";
 
 const ARTICLE_ROOT_ID = "article-read-root";
+const SITE_URL =
+  process.env.NEXT_PUBLIC_SITE_URL ||
+  (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "http://localhost:3000");
+const SITE_ORIGIN = SITE_URL.startsWith("http") ? SITE_URL : `https://${SITE_URL}`;
 
 const EMPTY_SECTIONS: ArticleSection[] = [];
+const OG_LOCALE: Record<Lang, string> = {
+  en: "en_US",
+  de: "de_DE",
+  fr: "fr_FR",
+};
 
 type Props = {
   params: Promise<{ slug: string }>;
@@ -40,14 +50,60 @@ export async function generateMetadata({
   const { slug } = await params;
   const sp = await searchParams;
   const requested = normalizeLang(sp.lang);
+  const languageAlternates = SUPPORTED_LANGS.reduce<Record<string, string>>((acc, lang) => {
+    acc[lang] = articleDetailPath(slug, lang);
+    return acc;
+  }, {});
+  languageAlternates["x-default"] = articleDetailPath(slug, DEFAULT_LANG);
+
+  const available = await getAvailableLanguages(slug);
+  const canonicalLang = available.includes(requested) ? requested : DEFAULT_LANG;
+  const canonicalPath = articleDetailPath(slug, canonicalLang);
   let article = await getArticleBySlug(slug, requested);
   if (!article && requested !== DEFAULT_LANG) {
     article = await getArticleBySlug(slug, DEFAULT_LANG);
   }
-  if (!article) return { title: "Article | Miavka Studio" };
+  if (!article) {
+    return {
+      title: "Article | Miavka Studio",
+      alternates: {
+        canonical: canonicalPath,
+        languages: languageAlternates,
+      },
+    };
+  }
+
+  const articleTitle = `${article.frontmatter.title} | Miavka Studio`;
+  const articleDescription = article.frontmatter.excerpt;
+  const imageUrl = new URL(article.frontmatter.image, SITE_ORIGIN).toString();
+  const effectiveLang = article.frontmatter.lang
+    ? normalizeLang(article.frontmatter.lang)
+    : canonicalLang;
+
   return {
-    title: `${article.frontmatter.title} | Miavka Studio`,
-    description: article.frontmatter.excerpt,
+    title: articleTitle,
+    description: articleDescription,
+    alternates: {
+      canonical: canonicalPath,
+      languages: languageAlternates,
+    },
+    openGraph: {
+      type: "article",
+      title: articleTitle,
+      description: articleDescription,
+      url: canonicalPath,
+      siteName: "Miavka Studio",
+      locale: OG_LOCALE[effectiveLang],
+      images: [
+        {
+          url: imageUrl,
+          alt: article.frontmatter.title,
+        },
+      ],
+      publishedTime: article.frontmatter.date,
+      tags: article.frontmatter.tags,
+      authors: ["Mari Miavka"],
+    },
   };
 }
 
@@ -120,11 +176,46 @@ export default async function ArticlePage({ params, searchParams }: Props) {
   const showAiNotice =
     (effectiveLang === "de" || effectiveLang === "fr") &&
     frontmatter.translatedBy === "ai";
+  const articleUrl = new URL(articleDetailPath(slug, effectiveLang), SITE_ORIGIN).toString();
+  const articleImageUrl = new URL(frontmatter.image, SITE_ORIGIN).toString();
+  const parsedDate = new Date(frontmatter.date);
+  const datePublished = Number.isNaN(parsedDate.getTime())
+    ? frontmatter.date
+    : parsedDate.toISOString();
+  const articleJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: frontmatter.title,
+    description: frontmatter.excerpt,
+    image: [articleImageUrl],
+    datePublished,
+    mainEntityOfPage: {
+      "@type": "WebPage",
+      "@id": articleUrl,
+    },
+    keywords: frontmatter.tags?.join(", "),
+    author: {
+      "@type": "Person",
+      name: "Mari Miavka",
+    },
+    publisher: {
+      "@type": "Organization",
+      name: "Miavka Studio",
+      logo: {
+        "@type": "ImageObject",
+        url: new URL("/images/logo.png", SITE_ORIGIN).toString(),
+      },
+    },
+  };
 
   return (
     <>
       <Nav />
       <ArticleReadProgress articleRootId={ARTICLE_ROOT_ID} />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }}
+      />
       <main className="min-h-screen bg-brand-cream pb-0 pt-[108px] md:pt-[116px]">
         <div className="mx-auto max-w-[1400px] px-6 pt-10 md:px-10 lg:px-16">
           <div className="lg:grid lg:grid-cols-[220px_minmax(0,680px)_minmax(0,1fr)] lg:gap-x-10 lg:items-stretch">

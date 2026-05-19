@@ -15,6 +15,23 @@ export const metadata: Metadata = {
   title: "Articles | Miavka Studio",
   description:
     "Brand breakdowns, systems, and stories for founder-led businesses.",
+  alternates: {
+    canonical: "/articles",
+  },
+  openGraph: {
+    type: "website",
+    title: "Articles | Miavka Studio",
+    description:
+      "Brand breakdowns, systems, and stories for founder-led businesses.",
+    url: "/articles",
+    siteName: "Miavka Studio",
+    images: [
+      {
+        url: "/images/articles/boxraw.jpg",
+        alt: "Miavka Studio articles",
+      },
+    ],
+  },
 };
 
 type Props = {
