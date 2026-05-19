@@ -1,0 +1,103 @@
+"use client";
+
+import { useState } from "react";
+import Link from "next/link";
+import LiquidButton from "@/components/LiquidButton";
+
+const NAV_LINKS = [
+  { label: "How I Work", href: "/#how-i-work" },
+  { label: "About Me", href: "/#about-me" },
+  { label: "Prices", href: "/#offers" },
+  { label: "Articles", href: "/#articles" },
+  { label: "Books", href: "/books" },
+  { label: "Blog", href: "/articles" },
+] as const;
+
+export default function Nav() {
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  return (
+    <nav className="fixed top-0 left-0 right-0 z-50 bg-brand-black pt-3">
+      <div className="flex h-14 items-center justify-between px-6 md:h-16 md:px-[135px]">
+        {/* Wordmark */}
+        <Link href="/" className="flex shrink-0 items-center gap-3">
+          <span
+            className="font-display relative bottom-[-1] text-3xl uppercase text-brand-red sm:text-3xl"
+            style={{ fontFamily: "'TG Girthy', Impact, sans-serif" }}
+          >
+            Miavka Studio
+          </span>
+        </Link>
+
+        {/* Desktop nav */}
+        <div className="hidden md:flex md:items-center md:gap-6 lg:gap-8">
+          <div className="flex flex-wrap items-center justify-end gap-x-4 gap-y-2 lg:gap-6">
+            {NAV_LINKS.map(({ label, href }) => (
+              <Link
+                key={label}
+                href={href}
+                className="font-body text-[10px] font-bold uppercase tracking-wide text-brand-cream/70 transition-colors hover:text-brand-cream lg:text-xs"
+              >
+                {label}
+              </Link>
+            ))}
+          </div>
+          <LiquidButton
+            href="/#contact"
+            className="border border-brand-red px-5 py-2 font-body text-xs font-bold uppercase text-brand-cream"
+            labelHoverClassName="group-hover:text-brand-black"
+            style={{ fontFamily: "'TG Girthy', Impact, sans-serif" }}
+          >
+            Let&apos;s Talk
+          </LiquidButton>
+        </div>
+
+        {/* Mobile hamburger */}
+        <button
+          type="button"
+          className="md:hidden text-brand-cream p-1"
+          onClick={() => setMenuOpen(!menuOpen)}
+          aria-expanded={menuOpen}
+          aria-label="Toggle menu"
+        >
+          <div className="flex flex-col gap-1.5">
+            <span
+              className={`block h-0.5 w-6 bg-brand-cream transition-all ${menuOpen ? "translate-y-2 rotate-45" : ""}`}
+            />
+            <span
+              className={`block h-0.5 w-6 bg-brand-cream transition-all ${menuOpen ? "opacity-0" : ""}`}
+            />
+            <span
+              className={`block h-0.5 w-6 bg-brand-cream transition-all ${menuOpen ? "-translate-y-2 -rotate-45" : ""}`}
+            />
+          </div>
+        </button>
+      </div>
+
+      {/* Mobile menu */}
+      {menuOpen && (
+        <div className="flex flex-col gap-6 border-t border-white/10 bg-brand-black px-6 py-6 md:hidden">
+          {NAV_LINKS.map(({ label, href }) => (
+            <Link
+              key={label}
+              href={href}
+              className="font-body text-sm font-bold uppercase text-brand-cream"
+              onClick={() => setMenuOpen(false)}
+            >
+              {label}
+            </Link>
+          ))}
+          <LiquidButton
+            href="/#contact"
+            className="w-full border border-brand-red px-5 py-3 text-center font-body text-xs font-bold uppercase text-brand-cream"
+            labelHoverClassName="group-hover:text-brand-black"
+            onClick={() => setMenuOpen(false)}
+            style={{ fontFamily: "'TG Girthy', Impact, sans-serif" }}
+          >
+            Let&apos;s Talk
+          </LiquidButton>
+        </div>
+      )}
+    </nav>
+  );
+}
