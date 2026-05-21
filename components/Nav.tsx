@@ -9,7 +9,7 @@ const NAV_LINKS = [
   { label: "About Me", href: "/#about-me" },
   { label: "Prices", href: "/#offers" },
   { label: "Articles", href: "/#articles" },
-  { label: "Books", href: "/books" },
+  { label: "Books", href: "https://links.miavka.ch/books.html", external: true },
   { label: "Blog", href: "/articles" },
 ] as const;
 
@@ -32,15 +32,25 @@ export default function Nav() {
         {/* Desktop nav */}
         <div className="hidden md:flex md:items-center md:gap-6 lg:gap-8">
           <div className="flex flex-wrap items-center justify-end gap-x-4 gap-y-2 lg:gap-6">
-            {NAV_LINKS.map(({ label, href }) => (
-              <Link
-                key={label}
-                href={href}
-                className="font-body text-[10px] font-bold uppercase tracking-wide text-brand-cream/70 transition-colors hover:text-brand-cream lg:text-xs"
-              >
-                {label}
-              </Link>
-            ))}
+            {NAV_LINKS.map(({ label, href, external }) =>
+              external ? (
+                <a
+                  key={label}
+                  href={href}
+                  className="font-body text-[10px] font-bold uppercase tracking-wide text-brand-cream/70 transition-colors hover:text-brand-cream lg:text-xs"
+                >
+                  {label}
+                </a>
+              ) : (
+                <Link
+                  key={label}
+                  href={href}
+                  className="font-body text-[10px] font-bold uppercase tracking-wide text-brand-cream/70 transition-colors hover:text-brand-cream lg:text-xs"
+                >
+                  {label}
+                </Link>
+              )
+            )}
           </div>
           <LiquidButton
             href="/#contact"
@@ -77,16 +87,27 @@ export default function Nav() {
       {/* Mobile menu */}
       {menuOpen && (
         <div className="flex flex-col gap-6 border-t border-white/10 bg-brand-black px-6 py-6 md:hidden">
-          {NAV_LINKS.map(({ label, href }) => (
-            <Link
-              key={label}
-              href={href}
-              className="font-body text-sm font-bold uppercase text-brand-cream"
-              onClick={() => setMenuOpen(false)}
-            >
-              {label}
-            </Link>
-          ))}
+          {NAV_LINKS.map(({ label, href, external }) =>
+            external ? (
+              <a
+                key={label}
+                href={href}
+                className="font-body text-sm font-bold uppercase text-brand-cream"
+                onClick={() => setMenuOpen(false)}
+              >
+                {label}
+              </a>
+            ) : (
+              <Link
+                key={label}
+                href={href}
+                className="font-body text-sm font-bold uppercase text-brand-cream"
+                onClick={() => setMenuOpen(false)}
+              >
+                {label}
+              </Link>
+            )
+          )}
           <LiquidButton
             href="/#contact"
             className="w-full border border-brand-red px-5 py-3 text-center font-body text-xs font-bold uppercase text-brand-cream"

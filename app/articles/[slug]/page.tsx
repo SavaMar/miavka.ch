@@ -326,7 +326,7 @@ export default async function ArticlePage({ params, searchParams }: Props) {
                     src={frontmatter.image}
                     alt=""
                     fill
-                    className="object-cover"
+                    className="object-contain object-center"
                     sizes="(max-width: 1024px) 100vw, 680px"
                     priority
                   />

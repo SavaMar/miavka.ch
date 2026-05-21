@@ -9,6 +9,14 @@ export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL.startsWith('http') ? SITE_URL : `https://${SITE_URL}`),
   title: 'Miavka Studio',
   description: 'Brand-building studio for founder-led businesses across Europe.',
+  icons: {
+    apple: [{ url: '/apple-touch-icon.png', sizes: '180x180' }],
+    icon: [
+      { url: '/favicon-32x32.png', type: 'image/png', sizes: '32x32' },
+      { url: '/favicon-16x16.png', type: 'image/png', sizes: '16x16' },
+    ],
+  },
+  manifest: '/site.webmanifest',
 }
 
 export default function RootLayout({
