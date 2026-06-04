@@ -13,13 +13,13 @@ type Props = {
 const SCROLL_CARD =
   "min-w-[calc((100%-10px)/1.2)] w-[calc((100%-10px)/1.2)] md:min-w-[calc((100%-20px)/2.2)] md:w-[calc((100%-20px)/2.2)] shrink-0 snap-start";
 
-function homeArticleHref(slug: string, lang: string): string {
-  return `/articles/${slug}?lang=${lang}`;
+function homeArticleHref(slug: string): string {
+  return `/articles/${slug}`;
 }
 
 function HomeArticleCard({ card }: { card: HomeCarouselCard }) {
-  const { slug, lang, item } = card;
-  const href = homeArticleHref(slug, lang);
+  const { slug, item, translatedTo } = card;
+  const href = homeArticleHref(slug);
 
   return (
     <div className="flex h-full min-h-0 min-w-0 flex-col overflow-hidden border border-ui-gray-300 bg-brand-cream">
@@ -42,6 +42,21 @@ function HomeArticleCard({ card }: { card: HomeCarouselCard }) {
         href={href}
         className="group flex min-h-0 flex-1 flex-col bg-brand-black p-6 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-red"
       >
+        {translatedTo.length > 0 ? (
+          <div className="mb-2 flex items-center gap-2">
+            {translatedTo.map((lang) => (
+              <span
+                key={lang}
+                className="inline-flex rounded-sm border border-brand-red/60 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-brand-red"
+                style={{
+                  fontFamily: "'Gotham Pro', 'Helvetica Neue', Arial, sans-serif",
+                }}
+              >
+                {lang.toUpperCase()}
+              </span>
+            ))}
+          </div>
+        ) : null}
         <p
           className="mb-2 line-clamp-2 min-h-[2.7rem] text-sm font-black leading-snug text-white transition-colors duration-700 ease-in-out group-hover:text-brand-red md:min-h-12 md:text-base"
           style={{
@@ -99,7 +114,7 @@ export default function ArticlesHomeCarousel({ cards }: Props) {
         <div className="max-w-6xl" role="region" aria-label="Article carousel">
           <ul className="flex w-full touch-pan-x gap-[10px] overflow-x-auto overflow-y-hidden pb-2 [-ms-overflow-style:none] [scrollbar-width:none] snap-x snap-mandatory motion-reduce:overflow-x-scroll [&::-webkit-scrollbar]:hidden">
             {cards.map((card) => (
-              <li key={`${card.slug}-${card.lang}`} className={SCROLL_CARD}>
+              <li key={card.slug} className={SCROLL_CARD}>
                 <HomeArticleCard card={card} />
               </li>
             ))}
@@ -131,10 +146,7 @@ export default function ArticlesHomeCarousel({ cards }: Props) {
                 style={{ width: `${slidePercent}%` }}
               >
                 {pair.map((card) => (
-                  <HomeArticleCard
-                    key={`${card.slug}-${card.lang}`}
-                    card={card}
-                  />
+                  <HomeArticleCard key={card.slug} card={card} />
                 ))}
               </div>
             ))}

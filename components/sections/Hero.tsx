@@ -120,15 +120,19 @@ export default function Hero() {
           style={{ gridColumn: "4 / 6", gridRow: "3 / 4" }}
         >
           <p
-            className="text-brand-cream text-[clamp(0.7rem,1.95vw,1rem)] leading-relaxed italic text-right"
+            className="text-white text-[clamp(0.85rem,1.95vw,1.3rem)] leading-relaxed text-left"
             style={{
-              fontFamily: "'Gotham Pro', 'Helvetica Neue', Arial, sans-serif",
-              fontWeight: 400,
+              fontFamily:
+                "var(--font-space-grotesk), 'Helvetica Neue', Arial, sans-serif",
+              fontWeight: 500,
             }}
           >
-            I work with founder-led businesses — sport spaces, independent
-            brands, expert practices across Europe — and rebuild them as brands
-            people want to belong to.
+            I work with people
+            <br />
+            who change other people&apos;s lives.
+            <br />
+            They just don&apos;t look like it online —{" "}
+            <span className="text-brand-red">yet.</span>
           </p>
         </div>
       </div>
@@ -168,7 +172,8 @@ export default function Hero() {
             <p
               className="text-left text-[clamp(0.78rem,3.8vw,0.98rem)] leading-[1.28] text-brand-cream italic"
               style={{
-                fontFamily: "'Gotham Pro', 'Helvetica Neue', Arial, sans-serif",
+                fontFamily:
+                  "var(--font-space-grotesk), 'Helvetica Neue', Arial, sans-serif",
                 fontWeight: 400,
               }}
             >

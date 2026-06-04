@@ -5,10 +5,8 @@ import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
 import {
   DEFAULT_LANG,
-  type Lang,
-  SUPPORTED_LANGS,
   getAllArticles,
-  normalizeLang,
+  getAvailableLanguages,
 } from "@/lib/articles";
 
 export const metadata: Metadata = {
@@ -34,45 +32,44 @@ export const metadata: Metadata = {
   },
 };
 
-type Props = {
-  searchParams: Promise<{ lang?: string }>;
-};
-
-function articlesIndexHref(lang: Lang): string {
-  return lang === DEFAULT_LANG ? "/articles" : `/articles?lang=${lang}`;
+function articleCardHref(slug: string): string {
+  return `/articles/${slug}`;
 }
 
-function articleCardHref(slug: string, lang: Lang): string {
-  return `/articles/${slug}?lang=${lang}`;
-}
-
-function formatArticleDate(iso: string, lang: Lang): string {
+function formatArticleDate(iso: string): string {
   const d = new Date(iso.length === 10 ? `${iso}T12:00:00` : iso);
   if (Number.isNaN(d.getTime())) return iso;
-  const locale = lang === "de" ? "de-DE" : lang === "fr" ? "fr-FR" : "en-US";
-  return d.toLocaleDateString(locale, {
+  return d.toLocaleDateString("en-US", {
     year: "numeric",
     month: "short",
     day: "numeric",
   });
 }
 
-function readTimeLabel(minutes: number, lang: Lang): string {
-  if (lang === "de") return `${minutes} Min. Lesezeit`;
-  if (lang === "fr") return `${minutes} min de lecture`;
+function readTimeLabel(minutes: number): string {
   return `${minutes} min read`;
 }
 
-const TAB_LABEL: Record<Lang, string> = {
-  en: "EN",
-  de: "DE",
-  fr: "FR",
-};
+function translationBadge(langs: string[]): string {
+  const hasDe = langs.includes("de");
+  const hasFr = langs.includes("fr");
+  if (hasDe && hasFr) return "EN + FR + DE";
+  if (hasFr) return "EN + FR";
+  if (hasDe) return "EN + DE";
+  return "EN only";
+}
 
-export default async function ArticlesPage({ searchParams }: Props) {
-  const sp = await searchParams;
-  const lang = normalizeLang(sp.lang);
-  const articles = await getAllArticles(lang);
+export default async function ArticlesPage() {
+  const articles = await getAllArticles(DEFAULT_LANG);
+  const articleLanguages = await Promise.all(
+    articles.map(async (article) => ({
+      slug: article.slug,
+      langs: await getAvailableLanguages(article.slug),
+    }))
+  );
+  const articleLanguagesMap = new Map(
+    articleLanguages.map((item) => [item.slug, item.langs])
+  );
 
   return (
     <>
@@ -99,35 +96,14 @@ export default async function ArticlesPage({ searchParams }: Props) {
             existed when I was building from zero.
           </p>
 
-          <nav
-            aria-label="Article language"
-            className="mb-10 flex flex-wrap gap-2 border-b border-ui-gray-300 pb-6"
-          >
-            {SUPPORTED_LANGS.map((code) => {
-              const active = code === lang;
-              return (
-                <Link
-                  key={code}
-                  href={articlesIndexHref(code)}
-                  className={`min-w-[3rem] rounded px-4 py-2 text-center text-xs font-bold uppercase tracking-widest transition-colors ${
-                    active
-                      ? "bg-brand-black text-brand-cream"
-                      : "bg-white text-brand-black shadow-sm ring-1 ring-ui-gray-300 hover:text-brand-red"
-                  }`}
-                  aria-current={active ? "true" : undefined}
-                >
-                  {TAB_LABEL[code]}
-                </Link>
-              );
-            })}
-          </nav>
-
           <ul className="grid grid-cols-1 gap-8 md:grid-cols-2 md:gap-8 lg:gap-10">
             {articles.map((article) => {
-              const href = articleCardHref(article.slug, lang);
+              const href = articleCardHref(article.slug);
+              const availableLangs = articleLanguagesMap.get(article.slug) ?? ["en"];
+              const translationState = translationBadge(availableLangs);
               return (
                 <li key={article.slug}>
-                  <article className="flex h-full flex-col overflow-hidden border-b bg-white shadow-md">
+                  <article className="flex h-full flex-col overflow-hidden rounded-[10px] border-b bg-white shadow-md">
                     <div className="group flex h-full flex-col">
                       <Link
                         href={href}
@@ -157,7 +133,7 @@ export default async function ArticlesPage({ searchParams }: Props) {
                                 "'Gotham Pro', 'Helvetica Neue', Arial, sans-serif",
                             }}
                           >
-                            {formatArticleDate(article.date, lang)}
+                            {formatArticleDate(article.date)}
                           </p>
                         </Link>
 
@@ -172,6 +148,16 @@ export default async function ArticlesPage({ searchParams }: Props) {
                             ))}
                           </ul>
                         ) : null}
+
+                        <p
+                          className="mb-3 text-[10px] font-bold uppercase tracking-wider text-brand-red"
+                          style={{
+                            fontFamily:
+                              "'Gotham Pro', 'Helvetica Neue', Arial, sans-serif",
+                          }}
+                        >
+                          {translationState}
+                        </p>
 
                         <Link
                           href={href}
@@ -203,7 +189,7 @@ export default async function ArticlesPage({ searchParams }: Props) {
                                 "'Gotham Pro', 'Helvetica Neue', Arial, sans-serif",
                             }}
                           >
-                            {readTimeLabel(article.readTimeMinutes, lang)}
+                            {readTimeLabel(article.readTimeMinutes)}
                           </p>
                         </Link>
                       </div>

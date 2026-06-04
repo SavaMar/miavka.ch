@@ -1,12 +1,14 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
+import { Lora } from "next/font/google";
 import { notFound } from "next/navigation";
 import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
 import ArticleReadProgress from "@/components/articles/ArticleReadProgress";
 import ArticleTableOfContents from "@/components/articles/ArticleTableOfContents";
 import ArticlePrevNext from "@/components/articles/ArticlePrevNext";
+import NotesSubscribeForm from "@/components/articles/NotesSubscribeForm";
 import {
   DEFAULT_LANG,
   SUPPORTED_LANGS,
@@ -23,8 +25,12 @@ import {
 const ARTICLE_ROOT_ID = "article-read-root";
 const SITE_URL =
   process.env.NEXT_PUBLIC_SITE_URL ||
-  (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "http://localhost:3000");
-const SITE_ORIGIN = SITE_URL.startsWith("http") ? SITE_URL : `https://${SITE_URL}`;
+  (process.env.VERCEL_URL
+    ? `https://${process.env.VERCEL_URL}`
+    : "http://localhost:3000");
+const SITE_ORIGIN = SITE_URL.startsWith("http")
+  ? SITE_URL
+  : `https://${SITE_URL}`;
 
 const EMPTY_SECTIONS: ArticleSection[] = [];
 const OG_LOCALE: Record<Lang, string> = {
@@ -32,6 +38,10 @@ const OG_LOCALE: Record<Lang, string> = {
   de: "de_DE",
   fr: "fr_FR",
 };
+const lora = Lora({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+});
 
 type Props = {
   params: Promise<{ slug: string }>;
@@ -50,14 +60,19 @@ export async function generateMetadata({
   const { slug } = await params;
   const sp = await searchParams;
   const requested = normalizeLang(sp.lang);
-  const languageAlternates = SUPPORTED_LANGS.reduce<Record<string, string>>((acc, lang) => {
-    acc[lang] = articleDetailPath(slug, lang);
-    return acc;
-  }, {});
+  const languageAlternates = SUPPORTED_LANGS.reduce<Record<string, string>>(
+    (acc, lang) => {
+      acc[lang] = articleDetailPath(slug, lang);
+      return acc;
+    },
+    {}
+  );
   languageAlternates["x-default"] = articleDetailPath(slug, DEFAULT_LANG);
 
   const available = await getAvailableLanguages(slug);
-  const canonicalLang = available.includes(requested) ? requested : DEFAULT_LANG;
+  const canonicalLang = available.includes(requested)
+    ? requested
+    : DEFAULT_LANG;
   const canonicalPath = articleDetailPath(slug, canonicalLang);
   let article = await getArticleBySlug(slug, requested);
   if (!article && requested !== DEFAULT_LANG) {
@@ -176,7 +191,10 @@ export default async function ArticlePage({ params, searchParams }: Props) {
   const showAiNotice =
     (effectiveLang === "de" || effectiveLang === "fr") &&
     frontmatter.translatedBy === "ai";
-  const articleUrl = new URL(articleDetailPath(slug, effectiveLang), SITE_ORIGIN).toString();
+  const articleUrl = new URL(
+    articleDetailPath(slug, effectiveLang),
+    SITE_ORIGIN
+  ).toString();
   const articleImageUrl = new URL(frontmatter.image, SITE_ORIGIN).toString();
   const parsedDate = new Date(frontmatter.date);
   const datePublished = Number.isNaN(parsedDate.getTime())
@@ -207,6 +225,30 @@ export default async function ArticlePage({ params, searchParams }: Props) {
       },
     },
   };
+  const breadcrumbJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "Home",
+        item: SITE_ORIGIN,
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Articles",
+        item: new URL("/articles", SITE_ORIGIN).toString(),
+      },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: frontmatter.title,
+        item: articleUrl,
+      },
+    ],
+  };
 
   return (
     <>
@@ -214,20 +256,14 @@ export default async function ArticlePage({ params, searchParams }: Props) {
       <ArticleReadProgress articleRootId={ARTICLE_ROOT_ID} />
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }}
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify([articleJsonLd, breadcrumbJsonLd]),
+        }}
       />
-      <main className="min-h-screen bg-brand-cream pb-0 pt-[108px] md:pt-[116px]">
-        <div className="mx-auto max-w-[1400px] px-6 pt-10 md:px-10 lg:px-16">
-          <div className="lg:grid lg:grid-cols-[220px_minmax(0,680px)_minmax(0,1fr)] lg:gap-x-10 lg:items-stretch">
-            <ArticleTableOfContents
-              sections={
-                frontmatter.sections?.length
-                  ? frontmatter.sections
-                  : EMPTY_SECTIONS
-              }
-            />
-
-            <div className="min-w-0 self-start">
+      <main className="min-h-screen bg-[#EFE7D8] pb-0 pt-[108px] md:pt-[116px]">
+        <div className="mx-auto max-w-[1200px] px-6 pt-10 md:px-8 lg:px-10">
+          <div className="lg:grid lg:grid-cols-[minmax(0,680px)_minmax(0,280px)] lg:justify-center lg:items-start lg:gap-10">
+            <div className="min-w-0">
               <p className="mb-6">
                 <Link
                   href={
@@ -324,19 +360,96 @@ export default async function ArticlePage({ params, searchParams }: Props) {
                 <div className="relative mb-12 aspect-video w-full overflow-hidden bg-brand-black">
                   <Image
                     src={frontmatter.image}
-                    alt=""
+                    alt={`${frontmatter.title} cover image`}
                     fill
-                    className="object-contain object-center"
+                    className="rounded-[10px] object-contain object-center"
                     sizes="(max-width: 1024px) 100vw, 680px"
                     priority
                   />
                 </div>
 
-                <div>{content}</div>
+                <ArticleTableOfContents
+                  sections={
+                    frontmatter.sections?.length
+                      ? frontmatter.sections
+                      : EMPTY_SECTIONS
+                  }
+                  showDesktop={false}
+                  showMobileInline
+                  showMobileFab
+                />
+
+                <div className={lora.className}>{content}</div>
+
+                <section className="mt-14 rounded-2xl border border-ui-gray-300 bg-brand-cream p-6 md:p-8">
+                  <h2
+                    className="text-[2rem] uppercase leading-[0.95] text-brand-black"
+                    style={{ fontFamily: "'TG Girthy', Impact, sans-serif" }}
+                  >
+                    More like this, once a week.
+                  </h2>
+                  <p
+                    className="mt-4 text-[18px] leading-[1.75] text-ui-gray-700"
+                    style={{
+                      fontFamily: "'Lora', Georgia, serif",
+                    }}
+                  >
+                    Brand breakdowns, marketing systems, and what actually works
+                    for sport businesses and founders. No pitch. Just the
+                    thinking.
+                  </p>
+                  <NotesSubscribeForm
+                    offer="article-bottom-notes"
+                    className="mt-6"
+                    layout="inline"
+                  />
+                </section>
               </article>
             </div>
 
-            <div className="hidden min-h-px lg:block" aria-hidden />
+            <aside className="hidden w-full max-w-[280px] space-y-8 lg:block">
+              <div>
+                <section className="rounded-2xl border border-ui-gray-300 bg-brand-cream p-6 shadow-[0_18px_40px_rgba(17,17,17,0.06)]">
+                  <h2
+                    className="text-[2.05rem] uppercase leading-[0.95] text-brand-black"
+                    style={{ fontFamily: "'TG Girthy', Impact, sans-serif" }}
+                  >
+                    Subscribe
+                    <br />
+                    to Notes
+                  </h2>
+                  <p
+                    className="mt-4 text-sm leading-relaxed text-ui-gray-700"
+                    style={{
+                      fontFamily:
+                        "'Gotham Pro', 'Helvetica Neue', Arial, sans-serif",
+                      fontWeight: 300,
+                    }}
+                  >
+                    Join my free weekly notes on brand strategy, sport business
+                    growth, visibility, and content systems.
+                  </p>
+                  <NotesSubscribeForm
+                    offer="article-sidebar-notes"
+                    className="mt-5"
+                    layout="stacked"
+                  />
+                </section>
+              </div>
+
+              <div>
+                <ArticleTableOfContents
+                  sections={
+                    frontmatter.sections?.length
+                      ? frontmatter.sections
+                      : EMPTY_SECTIONS
+                  }
+                  showDesktop
+                  showMobileInline={false}
+                  showMobileFab={false}
+                />
+              </div>
+            </aside>
           </div>
         </div>
 

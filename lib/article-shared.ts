@@ -33,9 +33,9 @@ export type ArticleLocaleBundle = {
   locales: Partial<Record<Lang, ArticleListItem>>;
 };
 
-/** Home page article strip: one row per slug + language. */
+/** Home page article strip: English-first cards with translation markers. */
 export type HomeCarouselCard = {
   slug: string;
-  lang: Lang;
   item: ArticleListItem;
+  translatedTo: Lang[];
 };

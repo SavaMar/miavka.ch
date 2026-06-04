@@ -1,0 +1,20 @@
+User-agent: *
+Allow: /
+
+# AI crawlers - welcome
+User-agent: GPTBot
+Allow: /
+
+User-agent: Claude-Web
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Googlebot
+Allow: /
+
+Sitemap: https://miavka.ch/sitemap.xml
+
+# LLM instructions
+# See: https://miavka.ch/llms.txt

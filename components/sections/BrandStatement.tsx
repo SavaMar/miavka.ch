@@ -1,4 +1,10 @@
 import DiscoveryCallButton from "@/components/sections/DiscoveryCallButton";
+import { Space_Grotesk } from "next/font/google";
+
+const spaceGrotesk = Space_Grotesk({
+  subsets: ["latin"],
+  weight: ["400", "700"],
+});
 
 const PAIN_POINTS = [
   "Your space feels different in person. Online, you look like every other business in your area.",
@@ -11,11 +17,11 @@ const PAIN_POINTS = [
 
 export default function BrandStatement() {
   return (
-    <section className="bg-brand-black px-6 py-16 md:px-10 md:py-24 lg:px-[155px] lg:py-[95px]">
+    <section className="bg-brand-cream px-6 py-16 md:px-10 md:py-24 lg:px-[155px] lg:py-[95px]">
       {/* Headline */}
       <div className="mb-6 text-center md:mb-8">
         <h2
-          className="text-brand-cream text-[clamp(1.55rem,8vw,3.2rem)] uppercase leading-[0.98] md:leading-[0.95]"
+          className="text-brand-black text-[clamp(1.55rem,8vw,3.2rem)] uppercase leading-[0.98] md:leading-[0.95]"
           style={{ fontFamily: "'TG Girthy', Impact, sans-serif" }}
         >
           You built something <span className="text-brand-red">real.</span>
@@ -28,10 +34,10 @@ export default function BrandStatement() {
       {/* Subtitle */}
       <div className="mb-10 text-center md:mb-14">
         <p
-          className="text-white text-sm italic leading-relaxed md:text-md"
+          className={`${spaceGrotesk.className} text-ui-gray-700 text-[18px] italic leading-relaxed`}
           style={{
-            fontFamily: "'Gotham Pro', 'Helvetica Neue', Arial, sans-serif",
             fontWeight: 400,
+            fontStyle: "italic",
           }}
         >
           There&apos;s a gap between what your business is and what people see
@@ -56,10 +62,9 @@ export default function BrandStatement() {
               ×
             </span>
             <p
-              className="text-white text-sm leading-relaxed md:text-m"
+              className={`${spaceGrotesk.className} text-ui-gray-700 text-[16px] leading-relaxed`}
               style={{
-                fontFamily: "'Gotham Pro', 'Helvetica Neue', Arial, sans-serif",
-                fontWeight: 300,
+                fontWeight: 400,
               }}
             >
               {text}
@@ -71,17 +76,16 @@ export default function BrandStatement() {
       {/* Sub-tagline */}
       <div className="mb-9 text-center md:mb-10">
         <p
-          className="mb-3 text-[clamp(0.95rem,4.5vw,3rem)] text-brand-cream md:text-lg"
-          style={{ fontFamily: "'TG Girthy', Impact, sans-serif" }}
+          className={`${spaceGrotesk.className} mb-3 text-[20px] text-brand-black`}
+          style={{ fontWeight: 700 }}
         >
           The gap isn&apos;t a content problem. It&apos;s a{" "}
           <span className="text-brand-red">system</span> problem.
         </p>
         <p
-          className="mx-auto max-w-3xl text-sm text-white md:text-md"
+          className={`${spaceGrotesk.className} mx-auto max-w-3xl text-[16px] text-ui-gray-700`}
           style={{
-            fontFamily: "'Gotham Pro', 'Helvetica Neue', Arial, sans-serif",
-            fontWeight: 300,
+            fontWeight: 400,
           }}
         >
           When your space, your voice, your visuals, and your marketing finally
@@ -95,11 +99,20 @@ export default function BrandStatement() {
 
       {/* CTA */}
       <div className="flex flex-col items-center gap-4 md:gap-5">
-        <DiscoveryCallButton variant="dark" size="large" />
-        <p
-          className="max-w-md text-center text-xs italic text-brand-cream md:max-w-none md:text-sm"
+        <DiscoveryCallButton
+          variant="light"
+          size="large"
+          className="rounded-[10px] border-2 border-brand-red bg-transparent text-brand-black"
+          labelHoverClassName="group-hover:text-brand-cream"
           style={{
-            fontFamily: "'Gotham Pro', 'Helvetica Neue', Arial, sans-serif",
+            fontFamily:
+              "var(--font-space-grotesk), 'Helvetica Neue', Arial, sans-serif",
+            fontWeight: 700,
+          }}
+        />
+        <p
+          className={`${spaceGrotesk.className} max-w-md text-center text-xs italic text-ui-gray-700 md:max-w-none md:text-sm`}
+          style={{
             fontWeight: 300,
           }}
         >

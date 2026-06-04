@@ -5,28 +5,18 @@ export default function AboutMe() {
   return (
     <section
       id="about-me"
-      className="scroll-mt-24 bg-brand-cream px-6 py-20 md:scroll-mt-28 md:px-10 md:py-28 lg:px-16"
+      className="scroll-mt-24 bg-brand-cream px-6 py-20 md:scroll-mt-28 md:pt-10 md:pb-24 md:py-10 lg:px-16"
     >
       <div className="mx-auto max-w-6xl">
         <div className="grid gap-12 md:grid-cols-2 md:items-stretch md:gap-16 lg:gap-20">
           {/* Left — text; column stretches with carousel height; CTA pinned to bottom */}
           <div className="flex min-h-0 flex-col md:h-full">
             <h2
-              className="mb-10 uppercase leading-none text-brand-black md:mb-12 text-[clamp(2rem,5vw,3.75rem)]"
+              className="mb-10 uppercase leading-none text-brand-black md:mb-5 text-[clamp(2rem,5vw,3.75rem)]"
               style={{ fontFamily: "'TG Girthy', Impact, sans-serif" }}
             >
               About Me
             </h2>
-
-            <p
-              className="mb-6 max-w-xl text-brand-red md:mb-8 text-xl font-bold leading-snug md:text-[1.625rem]"
-              style={{ fontFamily: "'TG Girthy', Impact, sans-serif" }}
-            >
-              I&apos;m Mari Miavka.
-              <br />
-              <span style={{ color: "#18181A" }}>Founder of</span> Miavka
-              Studio.
-            </p>
 
             <p
               className="max-w-xl text-black text-sm leading-relaxed md:text-base"
@@ -35,17 +25,31 @@ export default function AboutMe() {
                 fontWeight: 300,
               }}
             >
-              I came to brand-building through software, photography, sport, and
-              an obsession with how people are actually seen. I work with
-              founder-led businesses across Europe — and I write about the
-              brands that taught me everything I know.
+              Seven years as a software developer — Kyiv, Kraków, Berlin,
+              Zurich. Always the one who cared too much about how things
+              actually worked and why people stayed. Ex-professional athlete who
+              never really left. I started showing up at sport events and
+              competitions with a camera — and kept coming back, because that
+              world felt like home. That&apos;s where I met them. Founders of
+              martial arts gyms, fitness clubs, sport businesses. People with
+              real culture, real results, real community — invisible online. I
+              recognized the problem immediately. I got obsessed.Learned every
+              system I could find. Built things, broke things, built them again.
+              Turned out marketing is the most interesting engineering problem
+              I&apos;d ever touched. That&apos;s where I live now. And I still
+              get excited every single time.
             </p>
 
             <div className="mt-auto pt-10 md:pt-12">
               <LiquidButton
                 href="#"
-                className="border-2 border-brand-red px-4 py-4 font-body text-sm font-bold uppercase text-brand-black md:px-10 md:py-5 md:text-base"
-                style={{ fontFamily: "'TG Girthy', Impact, sans-serif" }}
+                className="rounded-[10px] border-2 border-brand-red bg-transparent px-4 py-4 text-sm font-bold uppercase text-brand-black md:px-10 md:py-5 md:text-base"
+                labelHoverClassName="group-hover:text-brand-cream"
+                style={{
+                  fontFamily:
+                    "var(--font-space-grotesk), 'Helvetica Neue', Arial, sans-serif",
+                  fontWeight: 700,
+                }}
               >
                 Read Full Story
               </LiquidButton>

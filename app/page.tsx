@@ -3,7 +3,6 @@ import Nav from "@/components/Nav";
 import Hero from "@/components/sections/Hero";
 import BookDiscovery from "@/components/sections/BookDiscovery";
 import BrandStatement from "@/components/sections/BrandStatement";
-import BrandDefinition from "@/components/sections/BrandDefinition";
 import Articles from "@/components/sections/Articles";
 import HowIWork from "@/components/sections/HowIWork";
 import FoundersWorkedWith from "@/components/sections/FoundersWorkedWith";
@@ -15,8 +14,12 @@ import Footer from "@/components/Footer";
 
 const SITE_URL =
   process.env.NEXT_PUBLIC_SITE_URL ||
-  (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "http://localhost:3000");
-const SITE_ORIGIN = SITE_URL.startsWith("http") ? SITE_URL : `https://${SITE_URL}`;
+  (process.env.VERCEL_URL
+    ? `https://${process.env.VERCEL_URL}`
+    : "http://localhost:3000");
+const SITE_ORIGIN = SITE_URL.startsWith("http")
+  ? SITE_URL
+  : `https://${SITE_URL}`;
 
 const HOME_DESCRIPTION =
   "Mari Miavka helps sport spaces, gyms, and fitness studios close the gap between who they are and how they appear online. Based in Switzerland, working across Europe.";
@@ -53,10 +56,10 @@ export default function Home() {
         <Hero />
         <BookDiscovery />
         <BrandStatement />
-        <BrandDefinition />
-        <Articles />
+        {/* <BrandDefinition /> */}
         <HowIWork />
         <FoundersWorkedWith />
+        <Articles />
         <AboutMe />
         <Offers />
         <BookCall />

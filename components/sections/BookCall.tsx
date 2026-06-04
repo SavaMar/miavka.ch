@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import Link from "next/link";
 import Cal, { getCalApi } from "@calcom/embed-react";
 import { CalendarDays } from "lucide-react";
 
@@ -8,6 +9,28 @@ import { CalendarDays } from "lucide-react";
 const FALLBACK_CAL_URL =
   process.env.NEXT_PUBLIC_CAL_BOOK_FALLBACK_URL ||
   "https://cal.com/mari-miavka/business-call";
+
+function DiscoveryOutlineButton({
+  href = "/discovery-call",
+  children,
+}: {
+  href?: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <Link
+      href={href}
+      className="inline-flex rounded-[10px] border-2 border-brand-red bg-transparent px-8 py-3 text-sm font-bold uppercase text-brand-cream transition-colors hover:bg-brand-red hover:text-brand-cream"
+      style={{
+        fontFamily:
+          "var(--font-space-grotesk), 'Helvetica Neue', Arial, sans-serif",
+        fontWeight: 700,
+      }}
+    >
+      {children}
+    </Link>
+  );
+}
 
 export default function BookCall() {
   const namespace = process.env.NEXT_PUBLIC_CAL_NAMESPACE || "business-call";
@@ -57,6 +80,12 @@ export default function BookCall() {
               </p>
             </div>
           )}
+        </div>
+
+        <div className="mt-8 flex justify-center">
+          <DiscoveryOutlineButton href="/discovery-call">
+            Not sure yet? Watch this first
+          </DiscoveryOutlineButton>
         </div>
       </div>
     </section>

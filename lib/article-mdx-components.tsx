@@ -1,6 +1,13 @@
 import type { ComponentPropsWithoutRef, ReactNode } from "react";
 import { isValidElement } from "react";
+import { Inter } from "next/font/google";
 import type { ArticleSection } from "./articles";
+import EmailCapture from "@/components/articles/EmailCapture";
+
+const interBold = Inter({
+  subsets: ["latin"],
+  weight: ["700"],
+});
 
 function toPlainText(node: ReactNode): string {
   if (node == null || typeof node === "boolean") return "";
@@ -22,77 +29,12 @@ function normalizeHeading(text: string): string {
     .trim();
 }
 
-type EmailCaptureProps = {
-  offer: string;
-  title: string;
-  description?: ReactNode;
-  buttonLabel?: string;
-  children?: ReactNode;
-};
-
-function EmailCapture({
-  offer,
-  title,
-  description,
-  buttonLabel = "GET THE CHECKLIST",
-  children,
-}: EmailCaptureProps) {
-  const fromProp = toPlainText(description).trim();
-  const fromChildren = toPlainText(children).trim();
-  const descriptionText = fromProp.length > 0 ? fromProp : fromChildren;
-
-  return (
-    <section
-      data-offer={offer}
-      className="my-8 border border-brand-black bg-brand-cream p-5 md:p-6"
-    >
-      <h3
-        className="whitespace-pre-line text-lg font-black leading-tight text-brand-black md:text-xl"
-        style={{ fontFamily: "'TG Girthy', Impact, sans-serif" }}
-      >
-        {title}
-      </h3>
-      <div
-        className="mt-3 text-sm leading-relaxed text-brand-black md:text-base"
-        style={{
-          fontFamily: "'Gotham Pro', 'Helvetica Neue', Arial, sans-serif",
-          fontWeight: 400,
-        }}
-      >
-        {descriptionText
-          .split("\n")
-          .filter((line) => line.trim().length > 0)
-          .map((line, idx) => (
-            <span key={`${offer}-line-${idx}`} className="block">
-              {line}
-            </span>
-          ))}
-      </div>
-      <form className="mt-5 flex flex-col gap-3 sm:flex-row">
-        <input
-          type="email"
-          placeholder="your email"
-          aria-label={`${offer} email`}
-          className="h-11 w-full border border-brand-black bg-transparent px-3 text-sm text-brand-black placeholder:text-brand-black/55 focus:outline-none focus:ring-2 focus:ring-brand-red/50"
-        />
-        <button
-          type="submit"
-          className="h-11 border border-brand-red bg-brand-black px-4 text-xs font-bold uppercase tracking-wide text-brand-cream transition-colors hover:bg-brand-red hover:text-brand-black"
-          style={{ fontFamily: "'TG Girthy', Impact, sans-serif" }}
-        >
-          {buttonLabel}
-        </button>
-      </form>
-    </section>
-  );
-}
-
 export function createArticleMdxComponents(sections: ArticleSection[]) {
   const titleToId = new Map(
     sections.map((s) => [normalizeHeading(s.title), s.id])
   );
 
-  const bodyClass = "text-md font-body leading-relaxed text-brand-black";
+  const bodyClass = "text-[18px] leading-[1.75] text-brand-black";
 
   return {
     h2: (props: ComponentPropsWithoutRef<"h2">) => {
@@ -102,9 +44,9 @@ export function createArticleMdxComponents(sections: ArticleSection[]) {
       return (
         <h2
           id={id}
-          className={`mt-10 scroll-mt-[108px] text-xl font-black text-brand-black first:mt-0 md:scroll-mt-[116px] md:text-2xl ${className ?? ""}`}
+          className={`mb-[0.7em] mt-10 scroll-mt-[108px] text-[26px] font-bold leading-tight text-brand-black first:mt-0 md:scroll-mt-[116px] ${interBold.className} ${className ?? ""}`}
           style={{
-            fontFamily: "'Gotham Pro', 'Helvetica Neue', Arial, sans-serif",
+            fontFamily: "'Inter', 'Helvetica Neue', Arial, sans-serif",
           }}
           {...rest}
         >
@@ -114,16 +56,16 @@ export function createArticleMdxComponents(sections: ArticleSection[]) {
     },
     h3: ({ className, ...rest }: ComponentPropsWithoutRef<"h3">) => (
       <h3
-        className={`mt-8 text-lg font-black leading-snug text-brand-black md:text-xl ${className ?? ""}`}
+        className={`mb-[0.65em] mt-8 text-[20px] font-bold leading-snug text-brand-black ${interBold.className} ${className ?? ""}`}
         style={{
-          fontFamily: "'Gotham Pro', 'Helvetica Neue', Arial, sans-serif",
+          fontFamily: "'Inter', 'Helvetica Neue', Arial, sans-serif",
         }}
         {...rest}
       />
     ),
     p: ({ className, ...rest }: ComponentPropsWithoutRef<"p">) => (
       <p
-        className={`${bodyClass} mt-4 first:mt-0 ${className ?? ""}`}
+        className={`${bodyClass} mb-[1.5em] ${className ?? ""}`}
         {...rest}
       />
     ),

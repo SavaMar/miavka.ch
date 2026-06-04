@@ -4,7 +4,7 @@ import Image from "next/image";
 import { useCallback, useState } from "react";
 
 const PHOTOS = [
-  "/images/me/1.jpg",
+  "/images/me/1.jpg?v=2",
   "/images/me/2.jpg",
   "/images/me/3.jpg",
   "/images/me/4.jpg",

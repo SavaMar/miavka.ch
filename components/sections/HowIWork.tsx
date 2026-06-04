@@ -80,7 +80,15 @@ function HowIWorkVideo() {
       </div>
 
       <div className="mt-10 flex justify-center md:mt-14">
-        <DiscoveryCallButton>
+        <DiscoveryCallButton
+          className="rounded-[10px] border-2 border-brand-red bg-transparent text-brand-black"
+          labelHoverClassName="group-hover:text-brand-cream"
+          style={{
+            fontFamily:
+              "var(--font-space-grotesk), 'Helvetica Neue', Arial, sans-serif",
+            fontWeight: 700,
+          }}
+        >
           Book discovery call.
         </DiscoveryCallButton>
       </div>
@@ -94,7 +102,6 @@ export default function HowIWork() {
       id="how-i-work"
       className="relative scroll-mt-24 overflow-hidden bg-brand-black px-6 py-20 md:scroll-mt-28 md:px-10 md:py-28 lg:px-16"
     >
-
       {/* Oversized watermark logo */}
       <div className="pointer-events-none absolute right-0 top-1/2 w-[60vw] max-w-xl -translate-y-1/2 opacity-5">
         <Image
@@ -107,7 +114,6 @@ export default function HowIWork() {
       </div>
 
       <div className="relative mx-auto max-w-5xl xl:max-w-6xl">
-
         {/* Section heading — centered */}
         <h2
           className="mx-auto mb-10 text-center uppercase leading-none text-brand-cream md:mb-12 text-[clamp(2.5rem,7vw,6rem)]"

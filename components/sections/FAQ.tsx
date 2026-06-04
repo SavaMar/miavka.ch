@@ -43,7 +43,20 @@ const FAQS = [
     a:
       "Discovery call is free. Brand audit is a fixed fee. Strategy and system builds are scoped after the audit — I don't price a problem I haven't seen. If budget is a real question, bring it to the call.",
   },
-];
+]
+
+const FAQ_SCHEMA = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: FAQS.map((item) => ({
+    '@type': 'Question',
+    name: item.q,
+    acceptedAnswer: {
+      '@type': 'Answer',
+      text: item.a,
+    },
+  })),
+}
 
 function FAQItem({ q, a }: { q: string; a: string }) {
   const [open, setOpen] = useState(false)
@@ -77,6 +90,10 @@ function FAQItem({ q, a }: { q: string; a: string }) {
 export default function FAQ() {
   return (
     <section className="bg-brand-cream py-20 md:py-28 px-6 md:px-10 lg:px-16">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(FAQ_SCHEMA) }}
+      />
 
       <div className="max-w-3xl mx-auto">
         <h2

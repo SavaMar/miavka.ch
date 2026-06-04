@@ -6,9 +6,17 @@ import { stickyChromeBottomPx } from "@/lib/article-chrome";
 
 type Props = {
   sections: ArticleSection[];
+  showDesktop?: boolean;
+  showMobileInline?: boolean;
+  showMobileFab?: boolean;
 };
 
-export default function ArticleTableOfContents({ sections }: Props) {
+export default function ArticleTableOfContents({
+  sections,
+  showDesktop = true,
+  showMobileInline = false,
+  showMobileFab = true,
+}: Props) {
   const ids = useMemo(
     () => sections.map((s) => s.id).filter(Boolean),
     [sections]
@@ -101,41 +109,70 @@ export default function ArticleTableOfContents({ sections }: Props) {
   if (sections.length === 0) return null;
 
   const linkClass = (id: string) =>
-    `block w-full text-left text-xs font-medium leading-snug transition-colors ${
+    `block w-full text-left text-[1.02rem] font-medium leading-snug transition-colors ${
       activeId === id
         ? "text-brand-red"
         : "text-brand-black hover:text-brand-red"
     }`;
+  const desktopLinkClass = (id: string) =>
+    `block w-full text-left text-[14px] font-normal leading-[1.45] transition-colors ${
+      activeId === id
+        ? "text-brand-red"
+        : "text-ui-gray-700 hover:text-brand-red"
+    }`;
 
   return (
     <>
-      {/* Desktop: sticky below nav + reading progress (lg+ only shows sidebar) */}
-      <nav
-        aria-label="On this page"
-        className="hidden h-full min-h-0 w-[220px] shrink-0 lg:block"
-      >
-        <div className="sticky top-[106px] max-h-[calc(100svh-116px-1.5rem)] overflow-y-auto overscroll-contain pb-8">
-          <p className="mb-4 mt-10 text-[10px] font-bold uppercase tracking-widest text-ui-gray-700">
-            On this page
+      {showDesktop ? (
+        <nav
+          aria-label="In this article"
+          className="hidden min-h-0 lg:sticky lg:top-[106px] lg:block"
+        >
+          <div className="max-h-[calc(100svh-116px-1.5rem)] overflow-y-auto overscroll-contain">
+            <p className="mb-4 text-[13px] font-medium uppercase tracking-wide text-ui-gray-700">
+              In this article:
+            </p>
+            <ol className="flex flex-col gap-3 border-l border-ui-gray-300 pl-4">
+              {sections.map((section, index) => (
+                <li key={section.id}>
+                  <button
+                    type="button"
+                    onClick={() => scrollTo(section.id)}
+                    className={`${desktopLinkClass(section.id)} flex items-start gap-2 text-left`}
+                  >
+                    <span className="mt-px text-brand-red">›</span>
+                    <span>{`${index + 1}. ${section.title}`}</span>
+                  </button>
+                </li>
+              ))}
+            </ol>
+          </div>
+        </nav>
+      ) : null}
+
+      {showMobileInline ? (
+        <nav aria-label="In this article" className="mb-8 lg:hidden">
+          <p className="mb-4 text-[2rem] leading-none text-brand-black">
+            In this article:
           </p>
-          <ol className="flex flex-col gap-3 border-l-2 border-ui-gray-300 pl-4">
-            {sections.map((section) => (
+          <ol className="flex flex-col gap-3 border-l border-ui-gray-300 pl-3">
+            {sections.map((section, index) => (
               <li key={section.id}>
                 <button
                   type="button"
                   onClick={() => scrollTo(section.id)}
-                  className={`${linkClass(section.id)} text-left`}
+                  className={`${linkClass(section.id)} flex items-start gap-2`}
                 >
-                  {section.title}
+                  <span className="mt-px text-brand-red">›</span>
+                  <span>{`${index + 1}. ${section.title}`}</span>
                 </button>
               </li>
             ))}
           </ol>
-        </div>
-      </nav>
+        </nav>
+      ) : null}
 
-      {/* Mobile FAB + sheet */}
-      <div className="lg:hidden">
+      {showMobileFab ? <div className="lg:hidden">
         <button
           type="button"
           onClick={() => setSheetOpen(true)}
@@ -158,14 +195,15 @@ export default function ArticleTableOfContents({ sections }: Props) {
                 Contents
               </p>
               <ol className="flex flex-col gap-3">
-                {sections.map((section) => (
+                {sections.map((section, index) => (
                   <li key={section.id}>
                     <button
                       type="button"
                       onClick={() => scrollTo(section.id)}
-                      className={`${linkClass(section.id)} py-1`}
+                      className={`${linkClass(section.id)} flex items-start gap-2 py-1`}
                     >
-                      {section.title}
+                      <span className="mt-px text-brand-red">›</span>
+                      <span>{`${index + 1}. ${section.title}`}</span>
                     </button>
                   </li>
                 ))}
@@ -173,7 +211,7 @@ export default function ArticleTableOfContents({ sections }: Props) {
             </div>
           </>
         ) : null}
-      </div>
+      </div> : null}
     </>
   );
 }
