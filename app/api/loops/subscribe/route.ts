@@ -11,6 +11,11 @@ function isNewsletterSignupOffer(offer: string): boolean {
   return normalized.includes("notes") || normalized.includes("newsletter");
 }
 
+function isVoiceCheckOffer(offer: string): boolean {
+  const normalized = offer.toLowerCase();
+  return normalized.includes("voice-check") || normalized.includes("voicecheck");
+}
+
 export async function POST(request: Request) {
   let payload: SubscribePayload;
 
@@ -79,6 +84,28 @@ export async function POST(request: Request) {
         const text = await welcomeRes.text();
         return NextResponse.json(
           { error: text || "Failed to trigger newsletter welcome sequence." },
+          { status: 500 }
+        );
+      }
+    }
+
+    if (isVoiceCheckOffer(offer)) {
+      const voiceCheckRes = await fetch("https://app.loops.so/api/v1/events/send", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${apiKey}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email,
+          eventName: "voiceCheckDownload",
+        }),
+      });
+
+      if (!voiceCheckRes.ok) {
+        const text = await voiceCheckRes.text();
+        return NextResponse.json(
+          { error: text || "Failed to trigger voice check download sequence." },
           { status: 500 }
         );
       }

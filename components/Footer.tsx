@@ -265,6 +265,7 @@ export default function Footer() {
             width={48}
             height={48}
             className="object-contain opacity-80"
+            style={{ width: "auto", height: "auto" }}
           />
         </div>
 

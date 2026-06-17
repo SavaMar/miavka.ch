@@ -38,6 +38,47 @@ const OG_LOCALE: Record<Lang, string> = {
   de: "de_DE",
   fr: "fr_FR",
 };
+const DISCOVERY_CTA_COPY: Record<
+  Lang,
+  {
+    heading: string;
+    paragraph1: string;
+    paragraph2: string;
+    buttonLabel: string;
+    signature: string;
+  }
+> = {
+  en: {
+    heading: "If you want to do this together",
+    paragraph1:
+      "Somewhere right now, your ideal customer is looking for exactly what you do — and not finding you. Not because you're not good. Because your online presence doesn't say what you are. I fix that. I go through everything your customer sees, find where the gap is, and rebuild it in the words that make them choose you.",
+    paragraph2:
+      "A 30-minute call: we look at your current voice, your positioning, and exactly where the gap is. If you want to work together after, we'll talk. If not — take the insights and run.",
+    buttonLabel: "Book a discovery call",
+    signature:
+      "Mari Miavka — Brand Architect for Sport & Expert Businesses | I close the gap between what you are and what people see online | Positioning · Brand · Marketing Systems | Switzerland",
+  },
+  de: {
+    heading: "Wenn du das gemeinsam angehen willst",
+    paragraph1:
+      "Gerade jetzt sucht dein idealer Kunde nach genau dem, was du anbietest — und findet dich nicht. Nicht, weil du nicht gut bist. Sondern weil deine Online-Präsenz nicht klar zeigt, was du wirklich bist. Genau da setze ich an. Ich analysiere alles, was dein Kunde sieht, finde die Luecke und baue es mit Worten neu auf, die Menschen dazu bringen, sich fuer dich zu entscheiden.",
+    paragraph2:
+      "Ein 30-minuetiges Gespräch: Wir schauen uns deine aktuelle Stimme, deine Positionierung und die konkrete Luecke an. Wenn du danach zusammenarbeiten willst, sprechen wir darueber. Wenn nicht — nimm die Erkenntnisse mit und setze sie um.",
+    buttonLabel: "Discovery Call buchen",
+    signature:
+      "Mari Miavka — Brand Architect for Sport & Expert Businesses | Ich schliesse die Luecke zwischen dem, was du bist, und dem, was Menschen online sehen | Positionierung · Brand · Marketing Systems | Schweiz",
+  },
+  fr: {
+    heading: "Si vous voulez faire ce travail ensemble",
+    paragraph1:
+      "En ce moment me me, votre client ideal cherche exactement ce que vous faites — et ne vous trouve pas. Pas parce que vous n'etes pas bon. Mais parce que votre presence en ligne ne dit pas clairement ce que vous etes. C'est ce que je corrige. Je passe en revue tout ce que votre client voit, j'identifie l'ecart et je reconstruis votre message avec des mots qui donnent envie de vous choisir.",
+    paragraph2:
+      "Un appel de 30 minutes : on regarde votre voix actuelle, votre positionnement et l'ecart exact. Si vous voulez travailler ensemble ensuite, on en parle. Sinon — repartez avec les insights et avancez.",
+    buttonLabel: "Reserver un discovery call",
+    signature:
+      "Mari Miavka — Brand Architect for Sport & Expert Businesses | Je comble l'ecart entre ce que vous etes et ce que les gens voient en ligne | Positioning · Brand · Marketing Systems | Suisse",
+  },
+};
 const lora = Lora({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
@@ -187,6 +228,8 @@ export default async function ArticlePage({ params, searchParams }: Props) {
   const { frontmatter, content } = compiled;
   const available = await getAvailableLanguages(slug);
   const adjacent = await getAdjacentArticles(slug, effectiveLang);
+  const shouldShowDiscoveryCta = !slug.toLowerCase().startsWith("addendum-");
+  const discoveryCtaCopy = DISCOVERY_CTA_COPY[effectiveLang];
 
   const showAiNotice =
     (effectiveLang === "de" || effectiveLang === "fr") &&
@@ -380,6 +423,51 @@ export default async function ArticlePage({ params, searchParams }: Props) {
                 />
 
                 <div className={lora.className}>{content}</div>
+
+                {shouldShowDiscoveryCta ? (
+                  <section className="mt-14 rounded-[10px] border border-brand-red bg-brand-cream p-6 md:p-8">
+                    <h2
+                      className="text-[2rem] uppercase leading-[0.95] text-brand-black"
+                      style={{ fontFamily: "'TG Girthy', Impact, sans-serif" }}
+                    >
+                      {discoveryCtaCopy.heading}
+                    </h2>
+                    <p
+                      className="mt-4 text-[18px] leading-[1.75] text-ui-gray-700"
+                      style={{ fontFamily: "'Lora', Georgia, serif" }}
+                    >
+                      {discoveryCtaCopy.paragraph1}
+                    </p>
+                    <p
+                      className="mt-4 text-[18px] leading-[1.75] text-ui-gray-700"
+                      style={{ fontFamily: "'Lora', Georgia, serif" }}
+                    >
+                      {discoveryCtaCopy.paragraph2}
+                    </p>
+                    <div className="mt-6">
+                      <Link
+                        href="/discovery-call"
+                        className="inline-flex cursor-pointer items-center justify-center rounded-[10px] bg-brand-red px-5 py-2.5 text-center text-[14px] font-semibold tracking-[0.02em] text-brand-cream transition hover:bg-brand-red/85 hover:text-brand-cream"
+                        style={{
+                          color: "#ffffff",
+                          fontFamily:
+                            "'Space Grotesk', 'Gotham Pro', 'Helvetica Neue', Arial, sans-serif",
+                        }}
+                      >
+                        {discoveryCtaCopy.buttonLabel}
+                      </Link>
+                    </div>
+                    <p
+                      className="mt-6 border-t border-brand-red/30 pt-6 text-sm leading-relaxed text-ui-gray-700"
+                      style={{
+                        fontFamily:
+                          "'Gotham Pro', 'Helvetica Neue', Arial, sans-serif",
+                      }}
+                    >
+                      {discoveryCtaCopy.signature}
+                    </p>
+                  </section>
+                ) : null}
 
                 <section className="mt-14 rounded-2xl border border-ui-gray-300 bg-brand-cream p-6 md:p-8">
                   <h2

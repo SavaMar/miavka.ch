@@ -26,6 +26,10 @@ export {
 
 export type ArticleSection = { id: string; title: string };
 
+function isAddendumSlug(slug: string): boolean {
+  return slug.toLowerCase().startsWith("addendum");
+}
+
 export type ArticleFrontmatter = {
   slug: string;
   lang: string;
@@ -82,7 +86,7 @@ export async function getAvailableLanguages(slug: string): Promise<Lang[]> {
 
 export async function getAllArticles(lang: string): Promise<ArticleListItem[]> {
   const normalized = normalizeLang(lang);
-  const slugs = await getSlugDirectories();
+  const slugs = (await getSlugDirectories()).filter((slug) => !isAddendumSlug(slug));
   const items: ArticleListItem[] = [];
 
   for (const slug of slugs) {

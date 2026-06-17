@@ -8,7 +8,7 @@ const NAV_LINKS = [
   { label: "How I Work", href: "/#how-i-work" },
   { label: "About Me", href: "/#about-me" },
   { label: "Prices", href: "/#offers" },
-  { label: "Articles", href: "/#articles" },
+  { label: "Articles", href: "/articles" },
   {
     label: "Books",
     href: "https://links.miavka.ch/books.html",

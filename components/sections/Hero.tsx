@@ -80,8 +80,8 @@ export default function Hero() {
             style={{ fontFamily: "'TG Girthy', Impact, sans-serif" }}
           >
             <span>
-              <span className="text-brand-cream">From good to </span>
-              <span className="text-brand-red">great.</span>
+              <span className="text-brand-cream">From invisible to </span>
+              <span className="text-brand-red">chosen.</span>
             </span>
 
             <br />
@@ -129,9 +129,9 @@ export default function Hero() {
           >
             I work with people
             <br />
-            who change other people&apos;s lives.
+            who built something real.
             <br />
-            They just don&apos;t look like it online —{" "}
+            Online, nobody sees it —{" "}
             <span className="text-brand-red">yet.</span>
           </p>
         </div>

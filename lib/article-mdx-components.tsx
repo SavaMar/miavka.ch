@@ -29,6 +29,40 @@ function normalizeHeading(text: string): string {
     .trim();
 }
 
+const BLOCK_TAGS = new Set([
+  "p",
+  "div",
+  "section",
+  "article",
+  "aside",
+  "blockquote",
+  "ul",
+  "ol",
+  "li",
+  "table",
+  "h1",
+  "h2",
+  "h3",
+  "h4",
+  "h5",
+  "h6",
+  "hr",
+]);
+
+function containsNestedBlock(node: ReactNode): boolean {
+  if (node == null || typeof node === "boolean") return false;
+  if (typeof node === "string" || typeof node === "number") return false;
+  if (Array.isArray(node)) return node.some(containsNestedBlock);
+  if (!isValidElement(node)) return false;
+
+  if (typeof node.type === "string" && BLOCK_TAGS.has(node.type)) {
+    return true;
+  }
+
+  const props = node.props as { children?: ReactNode };
+  return containsNestedBlock(props.children);
+}
+
 export function createArticleMdxComponents(sections: ArticleSection[]) {
   const titleToId = new Map(
     sections.map((s) => [normalizeHeading(s.title), s.id])
@@ -37,6 +71,34 @@ export function createArticleMdxComponents(sections: ArticleSection[]) {
   const bodyClass = "text-[18px] leading-[1.75] text-brand-black";
 
   return {
+    a: ({ className, style, ...rest }: ComponentPropsWithoutRef<"a">) => {
+      const classes = className ?? "";
+      const isCta =
+        classes.includes("article-cta-button") ||
+        (rest as Record<string, unknown>)["data-cta"] === "true";
+
+      if (isCta) {
+        return (
+          <a
+            className={`inline-flex rounded-[10px] border border-brand-red bg-brand-red px-3.5 py-1.5 text-[11px] font-bold uppercase -tracking-tighter text-white transition-colors hover:bg-brand-red/85 hover:text-brand-cream ${classes}`}
+            style={{
+              fontFamily:
+                "var(--font-space-grotesk), 'Helvetica Neue', Arial, sans-serif",
+              fontWeight: 700,
+              ...style,
+            }}
+            {...rest}
+          />
+        );
+      }
+
+      return (
+        <a
+          className={`underline decoration-brand-red/60 underline-offset-2 transition-colors hover:text-brand-red ${classes}`}
+          {...rest}
+        />
+      );
+    },
     h2: (props: ComponentPropsWithoutRef<"h2">) => {
       const { children, className, ...rest } = props;
       const text = toPlainText(children).trim();
@@ -63,12 +125,25 @@ export function createArticleMdxComponents(sections: ArticleSection[]) {
         {...rest}
       />
     ),
-    p: ({ className, ...rest }: ComponentPropsWithoutRef<"p">) => (
-      <p
-        className={`${bodyClass} mb-[1.5em] ${className ?? ""}`}
-        {...rest}
-      />
-    ),
+    p: ({ className, children, ...rest }: ComponentPropsWithoutRef<"p">) => {
+      const mergedClass = `${bodyClass} mb-[1.5em] ${className ?? ""}`;
+
+      // MDX sometimes injects block-level elements inside paragraph nodes.
+      // Render a div wrapper to avoid invalid <p><p/></p> hydration mismatches.
+      if (containsNestedBlock(children)) {
+        return (
+          <div className={mergedClass} {...rest}>
+            {children}
+          </div>
+        );
+      }
+
+      return (
+        <p className={mergedClass} {...rest}>
+          {children}
+        </p>
+      );
+    },
     img: ({ className, alt, ...rest }: ComponentPropsWithoutRef<"img">) => (
       <img
         className={`my-8 block w-full rounded object-contain ${className ?? ""}`}
