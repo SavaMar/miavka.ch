@@ -120,7 +120,7 @@ export default function NotesSubscribeForm({
           onChange={(e) => setFirstName(e.target.value)}
           placeholder={namePlaceholder}
           required
-          className={`h-11 w-full rounded-full border border-ui-gray-300 bg-brand-cream px-4 text-sm text-brand-black placeholder:text-ui-gray-500 focus:border-brand-red focus:outline-none ${inputClassName}`}
+          className={`h-11 w-full rounded-xl border border-ui-gray-300 bg-brand-cream px-4 text-sm text-brand-black placeholder:text-ui-gray-500 focus:border-brand-red focus:outline-none ${inputClassName}`}
         />
         <label className="sr-only" htmlFor={`${offer}-email`}>
           Your email
@@ -132,7 +132,7 @@ export default function NotesSubscribeForm({
           onChange={(e) => setEmail(e.target.value)}
           placeholder={emailPlaceholder}
           required
-          className={`h-11 w-full rounded-full border border-ui-gray-300 bg-brand-cream px-4 text-sm text-brand-black placeholder:text-ui-gray-500 focus:border-brand-red focus:outline-none ${inputClassName}`}
+          className={`h-11 w-full rounded-xl border border-ui-gray-300 bg-brand-cream px-4 text-sm text-brand-black placeholder:text-ui-gray-500 focus:border-brand-red focus:outline-none ${inputClassName}`}
         />
         <button
           type="submit"

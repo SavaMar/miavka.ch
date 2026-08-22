@@ -126,13 +126,13 @@ export default function ArticleTableOfContents({
       {showDesktop ? (
         <nav
           aria-label="In this article"
-          className="hidden min-h-0 lg:sticky lg:top-[106px] lg:block"
+          className="hidden min-h-0 md:block"
         >
-          <div className="max-h-[calc(100svh-116px-1.5rem)] overflow-y-auto overscroll-contain">
+          <div>
             <p className="mb-4 text-[13px] font-medium uppercase tracking-wide text-ui-gray-700">
               In this article:
             </p>
-            <ol className="flex flex-col gap-3 border-l border-ui-gray-300 pl-4">
+            <ol className="flex flex-col gap-3 border-l border-ui-gray-300/45 pl-4">
               {sections.map((section, index) => (
                 <li key={section.id}>
                   <button
@@ -151,11 +151,11 @@ export default function ArticleTableOfContents({
       ) : null}
 
       {showMobileInline ? (
-        <nav aria-label="In this article" className="mb-8 lg:hidden">
+        <nav aria-label="In this article" className="mb-8 md:hidden">
           <p className="mb-4 text-[2rem] leading-none text-brand-black">
             In this article:
           </p>
-          <ol className="flex flex-col gap-3 border-l border-ui-gray-300 pl-3">
+          <ol className="flex flex-col gap-3 border-l border-ui-gray-300/45 pl-3">
             {sections.map((section, index) => (
               <li key={section.id}>
                 <button

@@ -4,10 +4,9 @@ import Link from "next/link";
 import { Lora } from "next/font/google";
 import { notFound } from "next/navigation";
 import Nav from "@/components/Nav";
-import Footer from "@/components/Footer";
+import PersonalFooter from "@/components/home/PersonalFooter";
 import ArticleReadProgress from "@/components/articles/ArticleReadProgress";
-import ArticleTableOfContents from "@/components/articles/ArticleTableOfContents";
-import ArticlePrevNext from "@/components/articles/ArticlePrevNext";
+import ArticleTocPinned from "@/components/articles/ArticleTocPinned";
 import NotesSubscribeForm from "@/components/articles/NotesSubscribeForm";
 import {
   DEFAULT_LANG,
@@ -15,7 +14,7 @@ import {
   type ArticleSection,
   type Lang,
   articleDetailPath,
-  getAdjacentArticles,
+  getAllArticles,
   getArticleBySlug,
   getAvailableLanguages,
   getSlugDirectories,
@@ -33,6 +32,9 @@ const SITE_ORIGIN = SITE_URL.startsWith("http")
   : `https://${SITE_URL}`;
 
 const EMPTY_SECTIONS: ArticleSection[] = [];
+const ARTICLES_BG_COLOR = "#FFFFFF";
+const ARTICLES_PATTERN_COLOR = "#BAB7B7";
+const ARTICLES_PATTERN_OPACITY = 0.3;
 const OG_LOCALE: Record<Lang, string> = {
   en: "en_US",
   de: "de_DE",
@@ -45,7 +47,6 @@ const DISCOVERY_CTA_COPY: Record<
     paragraph1: string;
     paragraph2: string;
     buttonLabel: string;
-    signature: string;
   }
 > = {
   en: {
@@ -53,30 +54,24 @@ const DISCOVERY_CTA_COPY: Record<
     paragraph1:
       "Somewhere right now, your ideal customer is looking for exactly what you do — and not finding you. Not because you're not good. Because your online presence doesn't say what you are. I fix that. I go through everything your customer sees, find where the gap is, and rebuild it in the words that make them choose you.",
     paragraph2:
-      "A 30-minute call: we look at your current voice, your positioning, and exactly where the gap is. If you want to work together after, we'll talk. If not — take the insights and run.",
-    buttonLabel: "Book a discovery call",
-    signature:
-      "Mari Miavka — Brand Architect for Sport & Expert Businesses | I close the gap between what you are and what people see online | Positioning · Brand · Marketing Systems | Switzerland",
+      "We look at your current voice, your positioning, and exactly where the gap is.",
+    buttonLabel: "Tell me about your pain",
   },
   de: {
     heading: "Wenn du das gemeinsam angehen willst",
     paragraph1:
       "Gerade jetzt sucht dein idealer Kunde nach genau dem, was du anbietest — und findet dich nicht. Nicht, weil du nicht gut bist. Sondern weil deine Online-Präsenz nicht klar zeigt, was du wirklich bist. Genau da setze ich an. Ich analysiere alles, was dein Kunde sieht, finde die Luecke und baue es mit Worten neu auf, die Menschen dazu bringen, sich fuer dich zu entscheiden.",
     paragraph2:
-      "Ein 30-minuetiges Gespräch: Wir schauen uns deine aktuelle Stimme, deine Positionierung und die konkrete Luecke an. Wenn du danach zusammenarbeiten willst, sprechen wir darueber. Wenn nicht — nimm die Erkenntnisse mit und setze sie um.",
-    buttonLabel: "Discovery Call buchen",
-    signature:
-      "Mari Miavka — Brand Architect for Sport & Expert Businesses | Ich schliesse die Luecke zwischen dem, was du bist, und dem, was Menschen online sehen | Positionierung · Brand · Marketing Systems | Schweiz",
+      "Wir schauen uns deine aktuelle Stimme, deine Positionierung und die konkrete Luecke an.",
+    buttonLabel: "Tell me about your pain",
   },
   fr: {
     heading: "Si vous voulez faire ce travail ensemble",
     paragraph1:
       "En ce moment me me, votre client ideal cherche exactement ce que vous faites — et ne vous trouve pas. Pas parce que vous n'etes pas bon. Mais parce que votre presence en ligne ne dit pas clairement ce que vous etes. C'est ce que je corrige. Je passe en revue tout ce que votre client voit, j'identifie l'ecart et je reconstruis votre message avec des mots qui donnent envie de vous choisir.",
     paragraph2:
-      "Un appel de 30 minutes : on regarde votre voix actuelle, votre positionnement et l'ecart exact. Si vous voulez travailler ensemble ensuite, on en parle. Sinon — repartez avec les insights et avancez.",
-    buttonLabel: "Reserver un discovery call",
-    signature:
-      "Mari Miavka — Brand Architect for Sport & Expert Businesses | Je comble l'ecart entre ce que vous etes et ce que les gens voient en ligne | Positioning · Brand · Marketing Systems | Suisse",
+      "On regarde votre voix actuelle, votre positionnement et l'ecart exact.",
+    buttonLabel: "Tell me about your pain",
   },
 };
 const lora = Lora({
@@ -227,9 +222,23 @@ export default async function ArticlePage({ params, searchParams }: Props) {
 
   const { frontmatter, content } = compiled;
   const available = await getAvailableLanguages(slug);
-  const adjacent = await getAdjacentArticles(slug, effectiveLang);
   const shouldShowDiscoveryCta = !slug.toLowerCase().startsWith("addendum-");
   const discoveryCtaCopy = DISCOVERY_CTA_COPY[effectiveLang];
+  const allArticles = await getAllArticles(effectiveLang);
+  const currentTags = new Set((frontmatter.tags ?? []).map((tag) => tag.toLowerCase()));
+  const readNextArticles = allArticles
+    .filter((item) => item.slug !== slug)
+    .sort((a, b) => {
+      const aOverlap = a.tags.filter((tag) =>
+        currentTags.has(tag.toLowerCase())
+      ).length;
+      const bOverlap = b.tags.filter((tag) =>
+        currentTags.has(tag.toLowerCase())
+      ).length;
+      if (aOverlap !== bOverlap) return bOverlap - aOverlap;
+      return a.date < b.date ? 1 : -1;
+    })
+    .slice(0, 3);
 
   const showAiNotice =
     (effectiveLang === "de" || effectiveLang === "fr") &&
@@ -292,258 +301,302 @@ export default async function ArticlePage({ params, searchParams }: Props) {
       },
     ],
   };
+  const showArticleMetaStrip =
+    usedFallback ||
+    showAiNotice ||
+    available.length > 1 ||
+    (frontmatter.translatedBy === "ai" && !showAiNotice);
 
   return (
     <>
       <Nav />
-      <ArticleReadProgress articleRootId={ARTICLE_ROOT_ID} />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
           __html: JSON.stringify([articleJsonLd, breadcrumbJsonLd]),
         }}
       />
-      <main className="min-h-screen bg-[#EFE7D8] pb-0 pt-[108px] md:pt-[116px]">
-        <div className="mx-auto max-w-[1200px] px-6 pt-10 md:px-8 lg:px-10">
-          <div className="lg:grid lg:grid-cols-[minmax(0,680px)_minmax(0,280px)] lg:justify-center lg:items-start lg:gap-10">
-            <div className="min-w-0">
-              <p className="mb-6">
+      <main
+        className="relative min-h-screen overflow-x-hidden pb-0"
+        style={{ backgroundColor: ARTICLES_BG_COLOR }}
+      >
+        <div
+          className="pointer-events-none absolute inset-0 z-0"
+          style={{
+            backgroundColor: ARTICLES_PATTERN_COLOR,
+            opacity: ARTICLES_PATTERN_OPACITY,
+            WebkitMaskImage: "url('/bg_1.svg')",
+            WebkitMaskRepeat: "repeat",
+            WebkitMaskSize: "520px auto",
+            WebkitMaskPosition: "top left",
+            maskImage: "url('/bg_1.svg')",
+            maskRepeat: "repeat",
+            maskSize: "520px auto",
+            maskPosition: "top left",
+          }}
+          aria-hidden
+        />
+
+        <section className="relative z-10 w-full overflow-hidden">
+          <div className="relative h-[40vh] min-h-65 w-full">
+            <Image
+              src={frontmatter.image}
+              alt={`${frontmatter.title} cover image`}
+              fill
+              className="object-cover object-center"
+              sizes="100vw"
+              priority
+            />
+            <div className="absolute inset-0 bg-black/45" aria-hidden />
+            <div className="absolute inset-x-0 bottom-0">
+              <div className="mx-auto max-w-7xl px-6 pb-6 pt-14 md:px-10 md:pb-10 lg:px-16">
+                <h1
+                  className="mb-3 text-white"
+                  style={{
+                    fontFamily: "'TG Girthy', Impact, sans-serif",
+                    fontSize: "clamp(1.9rem, 4.5vw, 3.35rem)",
+                    lineHeight: 1.02,
+                  }}
+                >
+                  {frontmatter.title}
+                </h1>
+                <p
+                  className="max-w-3xl text-sm italic leading-relaxed text-white/85"
+                  style={{
+                    fontFamily:
+                      "'Gotham Pro', 'Helvetica Neue', Arial, sans-serif",
+                    fontWeight: 300,
+                  }}
+                >
+                  {frontmatter.excerpt}
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <ArticleReadProgress articleRootId={ARTICLE_ROOT_ID} mode="sticky" />
+
+        {showArticleMetaStrip ? (
+          <section className="relative z-10 mt-3 w-full bg-[#FFFFFF]">
+            <div className="mx-auto max-w-7xl px-6 py-5 md:px-10 md:py-6 lg:px-16">
+              {usedFallback ? (
+                <p className="mb-6 rounded border border-ui-gray-300/45 bg-white px-4 py-3 text-xs leading-relaxed text-ui-gray-700">
+                  This article isn&apos;t available in the selected language yet;
+                  showing English.
+                </p>
+              ) : null}
+
+              {showAiNotice ? <AiTranslationNotice lang={effectiveLang} /> : null}
+
+              <div className="mb-4 flex flex-wrap items-center gap-3">
+                {available.length > 1 ? (
+                  <nav
+                    aria-label="Article language"
+                    className="flex flex-wrap gap-2"
+                  >
+                    {available.map((lang) => {
+                      const active = lang === effectiveLang;
+                      return (
+                        <Link
+                          key={lang}
+                          href={articleDetailPath(slug, lang)}
+                          className={`rounded px-2 py-1 text-xs font-bold uppercase tracking-wide transition-colors ${
+                            active
+                              ? "bg-brand-black text-brand-cream"
+                              : "text-brand-black underline decoration-ui-gray-300/45 underline-offset-4 hover:text-brand-red"
+                          }`}
+                        >
+                          {lang}
+                        </Link>
+                      );
+                    })}
+                  </nav>
+                ) : null}
+                {frontmatter.translatedBy === "ai" && !showAiNotice ? (
+                  <span className="text-[10px] uppercase tracking-wider text-ui-gray-700">
+                    Translation: AI-assisted
+                  </span>
+                ) : null}
+              </div>
+            </div>
+          </section>
+        ) : null}
+
+        <section className="relative z-10 mx-auto max-w-7xl px-6 pb-16 pt-6 md:px-10 lg:px-16">
+          <div className="grid gap-8 md:grid-cols-[minmax(0,1fr)_320px] lg:grid-cols-[minmax(0,1fr)_360px]">
+            <article
+              id={ARTICLE_ROOT_ID}
+              className="rounded-[10px] bg-white p-6 md:p-8"
+            >
+              <div className={lora.className}>{content}</div>
+
+              {shouldShowDiscoveryCta ? (
+                <section className="mt-14 rounded-[10px] bg-brand-cream p-6 md:p-8">
+                  <h2
+                    className="text-[2rem] uppercase leading-[0.95] text-brand-black"
+                    style={{ fontFamily: "'TG Girthy', Impact, sans-serif" }}
+                  >
+                    {discoveryCtaCopy.heading}
+                  </h2>
+                  <p
+                    className="mt-4 text-[18px] leading-[1.75] text-ui-gray-700"
+                    style={{ fontFamily: "'Lora', Georgia, serif" }}
+                  >
+                    {discoveryCtaCopy.paragraph1}
+                  </p>
+                  <p
+                    className="mt-4 text-[18px] leading-[1.75] text-ui-gray-700"
+                    style={{ fontFamily: "'Lora', Georgia, serif" }}
+                  >
+                    {discoveryCtaCopy.paragraph2}
+                  </p>
+                  <div className="mt-6">
+                    <Link
+                      href="/contact"
+                      className="flex h-13 w-full cursor-pointer items-center justify-center rounded-[10px] bg-brand-black px-6 text-center text-base font-semibold tracking-[0.02em] text-white transition hover:bg-brand-black/88 hover:text-white"
+                      style={{
+                        color: "#ffffff",
+                        fontFamily:
+                          "'Space Grotesk', 'Gotham Pro', 'Helvetica Neue', Arial, sans-serif",
+                      }}
+                    >
+                      {discoveryCtaCopy.buttonLabel}
+                    </Link>
+                  </div>
+                </section>
+              ) : null}
+            </article>
+
+            <aside className="md:pr-1">
+              <section className="rounded-[10px] bg-white p-6 shadow-[0_8px_22px_rgba(17,17,17,0.06)]">
+                <h2
+                  className="text-[2.05rem] uppercase leading-[0.95] text-brand-black"
+                  style={{ fontFamily: "'TG Girthy', Impact, sans-serif" }}
+                >
+                  Subscribe
+                  <br />
+                  to Notes
+                </h2>
+                <p
+                  className="mt-4 text-sm leading-relaxed text-ui-gray-700"
+                  style={{
+                    fontFamily: "'Gotham Pro', 'Helvetica Neue', Arial, sans-serif",
+                    fontWeight: 300,
+                  }}
+                >
+                  I share notes from real experience: what I learn, what I test,
+                  book notes, marketing insights, and materials that are truly
+                  useful. I try to{" "}
+                  <span className="text-[1.08em] font-extrabold text-brand-black">
+                    educate myself
+                  </span>
+                  , find blind spots, and feed my curiosity.
+                </p>
+                <NotesSubscribeForm
+                  offer="article-sidebar-notes"
+                  className="mt-5"
+                  layout="stacked"
+                />
+                <p
+                  className="mt-5 text-xs leading-relaxed text-ui-gray-700"
+                  style={{
+                    fontFamily: "'Gotham Pro', 'Helvetica Neue', Arial, sans-serif",
+                    fontWeight: 300,
+                  }}
+                >
+                  By submitting this form, you&apos;ll be signed up to my free
+                  newsletter. I may also send you other emails about my courses.
+                  You can opt-out at any time. For more information, see our
+                  privacy policy.
+                </p>
+              </section>
+
+              <ArticleTocPinned
+                sections={
+                  frontmatter.sections?.length
+                    ? frontmatter.sections
+                    : EMPTY_SECTIONS
+                }
+                articleRootId={ARTICLE_ROOT_ID}
+              />
+            </aside>
+          </div>
+        </section>
+
+        {readNextArticles.length > 0 ? (
+          <section className="relative z-10 mb-6 w-full bg-brand-black py-14 md:mb-8 md:py-16">
+            <div className="mx-auto max-w-7xl px-6 md:px-10 lg:px-16">
+              <div className="flex flex-wrap items-center justify-between gap-5">
+                <h2
+                  className="text-[clamp(2rem,4.5vw,3.6rem)] uppercase leading-[0.95] text-brand-cream"
+                  style={{ fontFamily: "'TG Girthy', Impact, sans-serif" }}
+                >
+                  Read Next
+                </h2>
                 <Link
                   href={
                     effectiveLang !== DEFAULT_LANG
                       ? `/articles?lang=${effectiveLang}`
                       : "/articles"
                   }
-                  className="text-xs font-body font-bold uppercase text-brand-red hover:underline"
+                  className="inline-flex h-11 items-center justify-center rounded-[10px] border border-brand-cream/30 px-6 text-sm font-medium text-brand-cream transition hover:border-brand-cream hover:bg-brand-cream/10"
+                  style={{
+                    fontFamily: "'Gotham Pro', 'Helvetica Neue', Arial, sans-serif",
+                  }}
                 >
-                  ← All articles
+                  Explore all articles
                 </Link>
-              </p>
+              </div>
 
-              {usedFallback ? (
-                <p className="mb-6 rounded border border-ui-gray-300 bg-white/80 px-4 py-3 text-xs leading-relaxed text-ui-gray-700">
-                  This article isn&apos;t available in the selected language
-                  yet; showing English.
-                </p>
-              ) : null}
-
-              {showAiNotice ? (
-                <AiTranslationNotice lang={effectiveLang} />
-              ) : null}
-
-              <article
-                id={ARTICLE_ROOT_ID}
-                className="mx-auto max-w-[680px] pb-20"
-              >
-                <header className="mb-8">
-                  <div className="mb-4 flex flex-wrap items-center gap-3">
-                    {available.length > 1 ? (
-                      <nav
-                        aria-label="Article language"
-                        className="flex flex-wrap gap-2"
-                      >
-                        {available.map((lang) => {
-                          const active = lang === effectiveLang;
-                          return (
-                            <Link
-                              key={lang}
-                              href={articleDetailPath(slug, lang)}
-                              className={`rounded px-2 py-1 text-xs font-bold uppercase tracking-wide transition-colors ${
-                                active
-                                  ? "bg-brand-black text-brand-cream"
-                                  : "text-brand-black underline decoration-ui-gray-300 underline-offset-4 hover:text-brand-red"
-                              }`}
-                            >
-                              {lang}
-                            </Link>
-                          );
-                        })}
-                      </nav>
-                    ) : null}
-                    {frontmatter.translatedBy === "ai" && !showAiNotice ? (
-                      <span className="text-[10px] uppercase tracking-wider text-ui-gray-700">
-                        Translation: AI-assisted
-                      </span>
-                    ) : null}
-                  </div>
-
-                  <h1
-                    className="mb-4 text-brand-black"
-                    style={{
-                      fontFamily: "'TG Girthy', Impact, sans-serif",
-                      fontSize: "clamp(1.75rem, 4vw, 2.75rem)",
-                      lineHeight: 1.05,
-                    }}
+              <div className="mt-8 grid gap-5 md:grid-cols-3">
+                {readNextArticles.map((item) => (
+                  <Link
+                    key={item.slug}
+                    href={articleDetailPath(item.slug, effectiveLang)}
+                    className="group rounded-[10px] bg-[#222222] p-5 transition-transform duration-200 hover:-translate-y-0.5"
                   >
-                    {frontmatter.title}
-                  </h1>
-                  <p
-                    className="text-sm italic leading-relaxed text-ui-gray-700"
-                    style={{
-                      fontFamily:
-                        "'Gotham Pro', 'Helvetica Neue', Arial, sans-serif",
-                      fontWeight: 300,
-                    }}
-                  >
-                    {frontmatter.excerpt}
-                  </p>
-                  {frontmatter.tags?.length ? (
-                    <ul className="mt-4 flex flex-wrap gap-2">
-                      {frontmatter.tags.map((tag, ti) => (
-                        <li key={`${tag}-${ti}`}>
-                          <span className="rounded-full border border-ui-gray-300 px-3 py-1 text-[10px] font-bold uppercase tracking-wide text-ui-gray-700">
-                            {tag}
-                          </span>
-                        </li>
-                      ))}
-                    </ul>
-                  ) : null}
-                </header>
-
-                <div className="relative mb-12 aspect-video w-full overflow-hidden bg-brand-black">
-                  <Image
-                    src={frontmatter.image}
-                    alt={`${frontmatter.title} cover image`}
-                    fill
-                    className="rounded-[10px] object-contain object-center"
-                    sizes="(max-width: 1024px) 100vw, 680px"
-                    priority
-                  />
-                </div>
-
-                <ArticleTableOfContents
-                  sections={
-                    frontmatter.sections?.length
-                      ? frontmatter.sections
-                      : EMPTY_SECTIONS
-                  }
-                  showDesktop={false}
-                  showMobileInline
-                  showMobileFab
-                />
-
-                <div className={lora.className}>{content}</div>
-
-                {shouldShowDiscoveryCta ? (
-                  <section className="mt-14 rounded-[10px] border border-brand-red bg-brand-cream p-6 md:p-8">
-                    <h2
-                      className="text-[2rem] uppercase leading-[0.95] text-brand-black"
-                      style={{ fontFamily: "'TG Girthy', Impact, sans-serif" }}
-                    >
-                      {discoveryCtaCopy.heading}
-                    </h2>
-                    <p
-                      className="mt-4 text-[18px] leading-[1.75] text-ui-gray-700"
-                      style={{ fontFamily: "'Lora', Georgia, serif" }}
-                    >
-                      {discoveryCtaCopy.paragraph1}
-                    </p>
-                    <p
-                      className="mt-4 text-[18px] leading-[1.75] text-ui-gray-700"
-                      style={{ fontFamily: "'Lora', Georgia, serif" }}
-                    >
-                      {discoveryCtaCopy.paragraph2}
-                    </p>
-                    <div className="mt-6">
-                      <Link
-                        href="/discovery-call"
-                        className="inline-flex cursor-pointer items-center justify-center rounded-[10px] bg-brand-red px-5 py-2.5 text-center text-[14px] font-semibold tracking-[0.02em] text-brand-cream transition hover:bg-brand-red/85 hover:text-brand-cream"
-                        style={{
-                          color: "#ffffff",
-                          fontFamily:
-                            "'Space Grotesk', 'Gotham Pro', 'Helvetica Neue', Arial, sans-serif",
-                        }}
-                      >
-                        {discoveryCtaCopy.buttonLabel}
-                      </Link>
+                    <div className="relative aspect-4/3 overflow-hidden rounded-lg bg-black/20">
+                      <Image
+                        src={item.image}
+                        alt={item.title}
+                        fill
+                        className="object-cover object-center"
+                        sizes="(max-width: 768px) 100vw, 33vw"
+                      />
                     </div>
+                    <h3
+                      className="mt-4 text-[1.45rem] leading-[1.1] text-brand-cream"
+                      style={{ fontFamily: "'Fraunces', Georgia, serif" }}
+                    >
+                      {item.title}
+                    </h3>
                     <p
-                      className="mt-6 border-t border-brand-red/30 pt-6 text-sm leading-relaxed text-ui-gray-700"
+                      className="mt-2 line-clamp-3 text-sm leading-relaxed text-brand-cream/72"
                       style={{
                         fontFamily:
                           "'Gotham Pro', 'Helvetica Neue', Arial, sans-serif",
                       }}
                     >
-                      {discoveryCtaCopy.signature}
+                      {item.excerpt}
                     </p>
-                  </section>
-                ) : null}
-
-                <section className="mt-14 rounded-2xl border border-ui-gray-300 bg-brand-cream p-6 md:p-8">
-                  <h2
-                    className="text-[2rem] uppercase leading-[0.95] text-brand-black"
-                    style={{ fontFamily: "'TG Girthy', Impact, sans-serif" }}
-                  >
-                    More like this, once a week.
-                  </h2>
-                  <p
-                    className="mt-4 text-[18px] leading-[1.75] text-ui-gray-700"
-                    style={{
-                      fontFamily: "'Lora', Georgia, serif",
-                    }}
-                  >
-                    Brand breakdowns, marketing systems, and what actually works
-                    for sport businesses and founders. No pitch. Just the
-                    thinking.
-                  </p>
-                  <NotesSubscribeForm
-                    offer="article-bottom-notes"
-                    className="mt-6"
-                    layout="inline"
-                  />
-                </section>
-              </article>
+                    <span
+                      className="mt-4 inline-flex text-sm font-semibold text-brand-cream underline decoration-brand-cream/45 underline-offset-4 transition-colors group-hover:text-white"
+                      style={{
+                        fontFamily:
+                          "'Gotham Pro', 'Helvetica Neue', Arial, sans-serif",
+                      }}
+                    >
+                      Read more
+                    </span>
+                  </Link>
+                ))}
+              </div>
             </div>
-
-            <aside className="hidden w-full max-w-[280px] space-y-8 lg:block">
-              <div>
-                <section className="rounded-2xl border border-ui-gray-300 bg-brand-cream p-6 shadow-[0_18px_40px_rgba(17,17,17,0.06)]">
-                  <h2
-                    className="text-[2.05rem] uppercase leading-[0.95] text-brand-black"
-                    style={{ fontFamily: "'TG Girthy', Impact, sans-serif" }}
-                  >
-                    Subscribe
-                    <br />
-                    to Notes
-                  </h2>
-                  <p
-                    className="mt-4 text-sm leading-relaxed text-ui-gray-700"
-                    style={{
-                      fontFamily:
-                        "'Gotham Pro', 'Helvetica Neue', Arial, sans-serif",
-                      fontWeight: 300,
-                    }}
-                  >
-                    Join my free weekly notes on brand strategy, sport business
-                    growth, visibility, and content systems.
-                  </p>
-                  <NotesSubscribeForm
-                    offer="article-sidebar-notes"
-                    className="mt-5"
-                    layout="stacked"
-                  />
-                </section>
-              </div>
-
-              <div>
-                <ArticleTableOfContents
-                  sections={
-                    frontmatter.sections?.length
-                      ? frontmatter.sections
-                      : EMPTY_SECTIONS
-                  }
-                  showDesktop
-                  showMobileInline={false}
-                  showMobileFab={false}
-                />
-              </div>
-            </aside>
-          </div>
-        </div>
-
-        <ArticlePrevNext prev={adjacent.prev} next={adjacent.next} />
+          </section>
+        ) : null}
       </main>
-      <Footer />
+      <PersonalFooter />
     </>
   );
 }

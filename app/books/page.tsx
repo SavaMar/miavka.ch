@@ -1,47 +1,61 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import Nav from "@/components/Nav";
-import Footer from "@/components/Footer";
+import BooksLibrary, { type BookItem } from "@/components/books/BooksLibrary";
+import PersonalFooter from "@/components/home/PersonalFooter";
+import books from "@/data/books.json";
+
+const BOOKS_BG_COLOR = "#262326";
+const BOOKS_PATTERN_COLOR = "#5A2C33";
+const BOOKS_PATTERN_OPACITY = 0.58;
 
 export const metadata: Metadata = {
-  title: "Books | Miavka Studio",
-  description: "Books from Miavka Studio.",
+  title: "Books | Mari Miavka",
+  description: "Books Mari Miavka reads, revisits, and recommends.",
 };
 
 export default function BooksPage() {
+  const items = books as BookItem[];
+
   return (
     <>
       <Nav />
-      <main className="min-h-[50vh] bg-brand-black px-6 pb-20 pt-[72px] md:px-10 md:pb-28 md:pt-[80px] lg:px-16">
-        <div className="mx-auto max-w-2xl text-center">
+      <main
+        className="relative min-h-[50vh] overflow-hidden px-6 pb-20 pt-10 text-[#F4F4F0] md:px-10 md:pb-24 lg:px-16"
+        style={{ backgroundColor: BOOKS_BG_COLOR }}
+      >
+        <div
+          className="pointer-events-none absolute inset-0 z-0"
+          style={{
+            backgroundColor: BOOKS_PATTERN_COLOR,
+            opacity: BOOKS_PATTERN_OPACITY,
+            WebkitMaskImage: "url('/bg_1.svg')",
+            WebkitMaskRepeat: "repeat",
+            WebkitMaskSize: "520px auto",
+            WebkitMaskPosition: "top left",
+            maskImage: "url('/bg_1.svg')",
+            maskRepeat: "repeat",
+            maskSize: "520px auto",
+            maskPosition: "top left",
+          }}
+          aria-hidden
+        />
+        <div className="relative z-10 mx-auto max-w-[1680px]">
           <h1
-            className="mb-6 uppercase leading-none text-brand-cream text-[clamp(2rem,5vw,3rem)]"
+            className="mb-5 uppercase leading-none text-[clamp(2.2rem,5vw,4.2rem)]"
             style={{ fontFamily: "'TG Girthy', Impact, sans-serif" }}
           >
-            Books.
+            Books I&apos;ve read
           </h1>
-          <p
-            className="mb-10 font-body text-sm leading-relaxed text-brand-cream/65 md:text-base"
-            style={{
-              fontFamily: "'Gotham Pro', 'Helvetica Neue', Arial, sans-serif",
-              fontWeight: 300,
-            }}
-          >
-            This section is coming soon. Until then you can browse{" "}
-            <Link href="/articles" className="text-brand-red underline-offset-4 hover:underline">
-              articles
-            </Link>
-            .
+
+          <p className="max-w-3xl text-base leading-relaxed text-[#F4F4F0]/80 md:text-lg">
+            A collection of books that influenced me. Use search and hashtag
+            filters to browse by topic.
           </p>
-          <Link
-            href="/"
-            className="font-body text-xs font-black uppercase tracking-wider text-brand-cream/70 hover:text-brand-cream"
-          >
-            ← Back home
-          </Link>
+
+          <BooksLibrary books={items} />
         </div>
       </main>
-      <Footer />
+      <PersonalFooter />
     </>
   );
 }

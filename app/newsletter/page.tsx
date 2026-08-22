@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Nav from "@/components/Nav";
-import Footer from "@/components/Footer";
+import PersonalFooter from "@/components/home/PersonalFooter";
 import NotesSubscribeForm from "@/components/articles/NotesSubscribeForm";
 import ArticlesHomeCarousel from "@/components/sections/ArticlesHomeCarousel";
 import type { HomeCarouselCard } from "@/lib/article-shared";
@@ -32,7 +32,7 @@ export default async function NewsletterPage() {
   return (
     <>
       <Nav />
-      <main className="min-h-screen bg-brand-cream pt-[108px] md:pt-[116px]">
+      <main className="min-h-screen bg-[#F4F4F0] pt-8 md:pt-10">
         <section className="px-6 py-16 md:px-10 md:py-20 lg:px-16">
           <div className="mx-auto max-w-[820px] rounded-2xl  bg-white/80 p-6 md:p-10">
             <p
@@ -66,6 +66,7 @@ export default async function NewsletterPage() {
               className="mt-8"
               layout="stacked"
               inputClassName="bg-white"
+              buttonClassName="!rounded-[10px]"
             />
           </div>
         </section>
@@ -99,7 +100,7 @@ export default async function NewsletterPage() {
           </section>
         ) : null}
       </main>
-      <Footer />
+      <PersonalFooter />
     </>
   );
 }

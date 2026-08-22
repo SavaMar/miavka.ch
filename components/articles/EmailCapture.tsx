@@ -90,7 +90,7 @@ export default function EmailCapture({
   return (
     <section
       data-offer={offer}
-      className="my-8 rounded-2xl border border-ui-gray-300 bg-brand-cream p-6 shadow-[0_18px_40px_rgba(17,17,17,0.06)] md:p-6"
+      className="my-8 rounded-2xl bg-brand-cream p-6 shadow-[0_18px_40px_rgba(17,17,17,0.06)] md:p-6"
     >
       <h3
         className="whitespace-pre-line text-[2.05rem] uppercase leading-[0.95] text-brand-black"
@@ -151,7 +151,7 @@ export default function EmailCapture({
               value={firstName}
               onChange={(e) => setFirstName(e.target.value)}
               placeholder="Your name"
-              className="h-11 w-full rounded-full border border-ui-gray-300 bg-brand-cream px-4 text-sm text-brand-black placeholder:text-ui-gray-500 focus:border-brand-red focus:outline-none"
+              className="h-11 w-full rounded-xl border border-ui-gray-300 bg-brand-cream px-4 text-sm text-brand-black placeholder:text-ui-gray-500 focus:border-brand-black/35 focus:outline-none"
             />
 
             <label className="sr-only" htmlFor={`${offer}-email`}>
@@ -164,15 +164,15 @@ export default function EmailCapture({
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="h-11 w-full rounded-full border border-ui-gray-300 bg-brand-cream px-4 text-sm text-brand-black placeholder:text-ui-gray-500 focus:border-brand-red focus:outline-none"
+              className="h-11 w-full rounded-xl border border-ui-gray-300 bg-brand-cream px-4 text-sm text-brand-black placeholder:text-ui-gray-500 focus:border-brand-black/35 focus:outline-none"
             />
           </div>
 
           <button
             type="submit"
             disabled={isSubmitting}
-            className="mt-3 h-11 w-full rounded-full bg-brand-red px-4 text-sm font-bold text-brand-cream transition-colors hover:cursor-pointer hover:bg-brand-red/90 disabled:cursor-not-allowed disabled:opacity-70"
-            style={{ fontFamily: "'TG Girthy', Impact, sans-serif" }}
+            className="mt-3 h-11 w-full rounded-xl bg-brand-black px-4 text-sm font-semibold text-white transition-colors hover:cursor-pointer hover:bg-brand-black/88 disabled:cursor-not-allowed disabled:opacity-70"
+            style={{ fontFamily: "'Gotham Pro', 'Helvetica Neue', Arial, sans-serif" }}
           >
             {isSubmitting ? "SENDING..." : buttonLabel}
           </button>

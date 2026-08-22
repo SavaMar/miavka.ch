@@ -1,12 +1,12 @@
 import type { ComponentPropsWithoutRef, ReactNode } from "react";
 import { isValidElement } from "react";
-import { Inter } from "next/font/google";
+import { Fraunces } from "next/font/google";
 import type { ArticleSection } from "./articles";
 import EmailCapture from "@/components/articles/EmailCapture";
 
-const interBold = Inter({
+const fraunces = Fraunces({
   subsets: ["latin"],
-  weight: ["700"],
+  weight: ["600", "700"],
 });
 
 function toPlainText(node: ReactNode): string {
@@ -71,6 +71,7 @@ export function createArticleMdxComponents(sections: ArticleSection[]) {
   const bodyClass = "text-[18px] leading-[1.75] text-brand-black";
 
   return {
+    h1: () => null,
     a: ({ className, style, ...rest }: ComponentPropsWithoutRef<"a">) => {
       const classes = className ?? "";
       const isCta =
@@ -106,10 +107,7 @@ export function createArticleMdxComponents(sections: ArticleSection[]) {
       return (
         <h2
           id={id}
-          className={`mb-[0.7em] mt-10 scroll-mt-[108px] text-[26px] font-bold leading-tight text-brand-black first:mt-0 md:scroll-mt-[116px] ${interBold.className} ${className ?? ""}`}
-          style={{
-            fontFamily: "'Inter', 'Helvetica Neue', Arial, sans-serif",
-          }}
+          className={`mb-[0.8em] mt-14 scroll-mt-27 text-[clamp(2rem,3.2vw,3rem)] font-semibold leading-[1.06] text-brand-black first:mt-0 md:mt-16 md:scroll-mt-29 ${fraunces.className} ${className ?? ""}`}
           {...rest}
         >
           {children}
@@ -118,10 +116,7 @@ export function createArticleMdxComponents(sections: ArticleSection[]) {
     },
     h3: ({ className, ...rest }: ComponentPropsWithoutRef<"h3">) => (
       <h3
-        className={`mb-[0.65em] mt-8 text-[20px] font-bold leading-snug text-brand-black ${interBold.className} ${className ?? ""}`}
-        style={{
-          fontFamily: "'Inter', 'Helvetica Neue', Arial, sans-serif",
-        }}
+        className={`mb-[0.7em] mt-10 text-[clamp(1.5rem,2.4vw,2.1rem)] font-semibold leading-[1.12] text-brand-black md:mt-12 ${fraunces.className} ${className ?? ""}`}
         {...rest}
       />
     ),
@@ -151,12 +146,7 @@ export function createArticleMdxComponents(sections: ArticleSection[]) {
         {...rest}
       />
     ),
-    hr: ({ className, ...rest }: ComponentPropsWithoutRef<"hr">) => (
-      <hr
-        className={`my-8 border-0 border-t border-brand-black/25 ${className ?? ""}`}
-        {...rest}
-      />
-    ),
+    hr: () => null,
     EmailCapture,
     ul: ({ className, ...rest }: ComponentPropsWithoutRef<"ul">) => (
       <ul

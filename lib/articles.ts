@@ -1,4 +1,4 @@
-import { readFile, readdir } from "fs/promises";
+import { readFile, readdir, stat } from "fs/promises";
 import path from "path";
 import matter from "gray-matter";
 import { compileMDX } from "next-mdx-remote/rsc";
@@ -14,6 +14,8 @@ import {
 } from "./article-shared";
 
 export const CONTENT_ARTICLES_ROOT = path.join(process.cwd(), "content/articles");
+const PUBLIC_ROOT = path.join(process.cwd(), "public");
+const assetVersionCache = new Map<string, string>();
 
 export {
   DEFAULT_LANG,
@@ -28,6 +30,28 @@ export type ArticleSection = { id: string; title: string };
 
 function isAddendumSlug(slug: string): boolean {
   return slug.toLowerCase().startsWith("addendum");
+}
+
+async function withAssetVersion(assetPath: string): Promise<string> {
+  if (!assetPath.startsWith("/")) return assetPath;
+
+  const [pathname, search = ""] = assetPath.split("?");
+  let version = assetVersionCache.get(pathname);
+
+  if (!version) {
+    try {
+      const filePath = path.join(PUBLIC_ROOT, pathname.replace(/^\//, ""));
+      const fileStat = await stat(filePath);
+      version = Math.floor(fileStat.mtimeMs).toString(36);
+      assetVersionCache.set(pathname, version);
+    } catch {
+      return assetPath;
+    }
+  }
+
+  const params = new URLSearchParams(search);
+  params.set("v", version);
+  return `${pathname}?${params.toString()}`;
 }
 
 export type ArticleFrontmatter = {
@@ -102,11 +126,13 @@ export async function getAllArticles(lang: string): Promise<ArticleListItem[]> {
     const fm = data as Partial<ArticleFrontmatter>;
     if (!fm.slug || !fm.title) continue;
 
+    const image = await withAssetVersion(fm.image ?? "/images/articles/boxraw.jpg");
+
     items.push({
       slug: fm.slug,
       title: fm.title,
       excerpt: fm.excerpt ?? "",
-      image: fm.image ?? "/images/articles/boxraw.jpg",
+      image,
       date: fm.date ?? "",
       lang: fm.lang ?? normalized,
       tags: Array.isArray(fm.tags) ? fm.tags : [],
@@ -138,6 +164,9 @@ export async function getArticleBySlug(
 
   const { data, content } = matter(raw);
   const frontmatter = data as ArticleFrontmatter;
+  frontmatter.image = await withAssetVersion(
+    frontmatter.image ?? "/images/articles/boxraw.jpg"
+  );
 
   const { content: mdxContent } = await compileMDX({
     source: content,

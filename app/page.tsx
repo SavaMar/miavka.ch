@@ -1,16 +1,12 @@
 import type { Metadata } from "next";
 import Nav from "@/components/Nav";
-import Hero from "@/components/sections/Hero";
-import BookDiscovery from "@/components/sections/BookDiscovery";
-import BrandStatement from "@/components/sections/BrandStatement";
-import Articles from "@/components/sections/Articles";
-import HowIWork from "@/components/sections/HowIWork";
-import FoundersWorkedWith from "@/components/sections/FoundersWorkedWith";
-import AboutMe from "@/components/sections/AboutMe";
-import Offers from "@/components/sections/Offers";
-import BookCall from "@/components/sections/BookCall";
-import FAQ from "@/components/sections/FAQ";
-import Footer from "@/components/Footer";
+import PersonalHero from "@/components/home/PersonalHero";
+import HomeNewsletterSignup from "@/components/home/HomeNewsletterSignup";
+import PersonalFooter from "@/components/home/PersonalFooter";
+import NowSection from "@/components/home/NowSection";
+import HomeArticlesSection from "@/components/home/HomeArticlesSection";
+import AboutTeaserSection from "@/components/home/AboutTeaserSection";
+import { DEFAULT_LANG, getAllArticles } from "@/lib/articles";
 
 const SITE_URL =
   process.env.NEXT_PUBLIC_SITE_URL ||
@@ -22,50 +18,63 @@ const SITE_ORIGIN = SITE_URL.startsWith("http")
   : `https://${SITE_URL}`;
 
 const HOME_DESCRIPTION =
-  "Mari Miavka helps sport spaces, gyms, and fitness studios close the gap between who they are and how they appear online. Based in Switzerland, working across Europe.";
+  "Mari Miavka writes about clarity, systems, and reinvention for people building meaningful work.";
 
 const HOME_JSON_LD = {
   "@context": "https://schema.org",
-  "@type": "ProfessionalService",
-  name: "Miavka Studio",
+  "@type": "Person",
+  name: "Mari Miavka",
   url: SITE_ORIGIN,
   description: HOME_DESCRIPTION,
-  areaServed: ["Switzerland", "Europe"],
-  founder: {
-    "@type": "Person",
-    name: "Mari Miavka",
+  jobTitle: "Writer and builder",
+  worksFor: {
+    "@type": "Organization",
+    name: "Miavka Studio",
   },
   keywords:
-    "brand strategist Switzerland, sport business branding, gym marketing Europe, Markenstrategie Schweiz, fitness studio brand strategy, martial arts academy marketing, brand consultant Geneva, stratège de marque en Suisse, stratège marketing",
+    "writing, systems thinking, reinvention, branding, marketing philosophy",
 };
 
 export const metadata: Metadata = {
-  title: "Miavka Studio — Brand Strategy for Sport Businesses | Switzerland",
+  title: "Mari Miavka — Writing, Systems, Reinvention",
   description: HOME_DESCRIPTION,
 };
 
-export default function Home() {
+export default async function Home() {
+  const articles = (await getAllArticles(DEFAULT_LANG)).slice(0, 3);
+  const nowLastUpdated = new Date().toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+  });
+
   return (
     <>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(HOME_JSON_LD) }}
       />
-      <Nav />
-      <main>
-        <Hero />
-        <BookDiscovery />
-        <BrandStatement />
-        {/* <BrandDefinition /> */}
-        <HowIWork />
-        <FoundersWorkedWith />
-        <Articles />
-        <AboutMe />
-        <Offers />
-        <BookCall />
-        <FAQ />
+      <main className="relative min-h-screen bg-[#F4F4F0] text-[#161515]">
+        <div
+          className="pointer-events-none fixed inset-0 z-0 opacity-[0.12] mix-blend-multiply"
+          style={{
+            backgroundImage:
+              "radial-gradient(circle at 1px 1px, #161515 0.8px, transparent 0.8px)",
+            backgroundSize: "3px 3px",
+          }}
+          aria-hidden
+        />
+
+        <div className="relative z-10">
+          <Nav />
+          <PersonalHero />
+          <NowSection nowLastUpdated={nowLastUpdated} />
+          <HomeNewsletterSignup />
+          <HomeArticlesSection articles={articles} />
+          <AboutTeaserSection />
+        </div>
       </main>
-      <Footer />
+      <PersonalFooter />
     </>
   );
 }

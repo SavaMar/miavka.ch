@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { Space_Grotesk } from 'next/font/google'
+import { JetBrains_Mono, Space_Grotesk } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
 import Script from 'next/script'
 import './globals.css'
@@ -12,6 +12,11 @@ const spaceGrotesk = Space_Grotesk({
   subsets: ['latin'],
   weight: ['400', '500', '600', '700'],
   variable: '--font-space-grotesk',
+})
+const jetBrainsMono = JetBrains_Mono({
+  subsets: ['latin'],
+  weight: ['400', '500', '600'],
+  variable: '--font-jetbrains-mono',
 })
 
 const GLOBAL_ENTITY_SCHEMA = [
@@ -111,7 +116,10 @@ gtag('js', new Date());
 gtag('config', 'G-4SZZWD39HC');`}
         </Script>
       </head>
-      <body suppressHydrationWarning className={spaceGrotesk.variable}>
+      <body
+        suppressHydrationWarning
+        className={`${spaceGrotesk.variable} ${jetBrainsMono.variable}`}
+      >
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(GLOBAL_ENTITY_SCHEMA) }}

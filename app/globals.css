@@ -2,8 +2,8 @@
 
 /* ── Brand theme tokens ─────────────────────────────────── */
 @theme {
-  --color-brand-black: #111111;
-  --color-brand-cream: #efe7d8;
+  --color-brand-black: #161515;
+  --color-brand-cream: #f4f4f0;
   --color-brand-red: #e8320a;
   --color-ui-gray-100: #e5e2e0;
   --color-ui-gray-300: #b8b5b3;
@@ -12,6 +12,8 @@
   --font-display: "TG Girthy", Impact, sans-serif;
   --font-body: "Gotham Pro", "Helvetica Neue", Arial, sans-serif;
   --font-accent: var(--font-space-grotesk), "Helvetica Neue", Arial, sans-serif;
+  --font-mono: var(--font-jetbrains-mono), "SFMono-Regular", Menlo, Monaco,
+    Consolas, monospace;
 
   --tracking-tighter: -0.04em;
   --tracking-wide: 0.08em;
@@ -124,7 +126,7 @@
 
   body {
     font-family: "Gotham Pro", "Helvetica Neue", Arial, sans-serif;
-    background-color: #161515;
-    color: #efecea;
+    background-color: #f4f4f0;
+    color: #161515;
   }
 }
