@@ -141,6 +141,7 @@ export default function PersonalHero() {
     }
 
     function updateDots() {
+      const time = performance.now();
       pointer.x += (pointer.tx - pointer.x) * 0.14;
       pointer.y += (pointer.ty - pointer.y) * 0.14;
 
@@ -148,6 +149,9 @@ export default function PersonalHero() {
         const dx = dot.x - pointer.x;
         const dy = dot.y - pointer.y;
         const distance = Math.sqrt(dx * dx + dy * dy);
+        const idlePulse =
+          0.12 *
+          (0.5 + 0.5 * Math.sin((dot.x + dot.y) * 0.03 + time * 0.0018));
 
         if (distance < INFLUENCE_RADIUS) {
           const t = 1 - distance / INFLUENCE_RADIUS;
@@ -159,7 +163,7 @@ export default function PersonalHero() {
           }
           dot.colorT = Math.min(1, dot.colorT + 0.08);
         } else {
-          dot.targetR = BASE_DOT;
+          dot.targetR = BASE_DOT + idlePulse;
           dot.colorT = Math.max(0, dot.colorT - 0.05);
           if (dot.colorT <= 0) dot.assignedColor = null;
         }
@@ -248,7 +252,7 @@ export default function PersonalHero() {
   return (
     <section
       ref={heroRef}
-      className="relative overflow-hidden bg-[#F4F4F0] pt-6 md:pt-8"
+      className="relative min-h-[calc(100dvh-58px)] overflow-hidden bg-[#F4F4F0] pt-6 md:min-h-[calc(100dvh-64px)] md:pt-8"
     >
       {!reducedMotion ? (
         <canvas
@@ -268,7 +272,7 @@ export default function PersonalHero() {
         />
       )}
 
-      <div className="mx-auto w-full max-w-[1680px] px-4 pb-12 pt-5 md:px-8 md:pb-16 md:pt-7 lg:px-12 lg:pb-20">
+      <div className="mx-auto flex min-h-[calc(100dvh-58px)] w-full max-w-[1680px] flex-col px-4 pb-12 pt-5 md:min-h-[calc(100dvh-64px)] md:px-8 md:pb-16 md:pt-7 lg:px-12 lg:pb-20">
         <div className="relative z-10 mt-3 grid grid-cols-[1fr_2fr_1fr] gap-[15px] md:mt-5">
           <div className="relative min-h-0 overflow-hidden bg-[#161515]/8">
             <Image
@@ -364,9 +368,8 @@ export default function PersonalHero() {
             lineHeight: 1.04,
           }}
         >
-          I write about thinking clearly, building systems,{" "}
-          <span className="text-[#D0320E]">marketing</span> and reinventing
-          yourself.
+          I write about thinking clearly, <span className="text-[#D0320E]">AI</span>, building
+          systems, <span className="text-[#D0320E]">marketing</span> and reinventing yourself.
         </h1>
       </div>
     </section>

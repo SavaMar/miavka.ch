@@ -23,7 +23,7 @@ export default function AboutHeroStyleCarousel() {
   }
 
   return (
-    <div className="relative aspect-square w-full overflow-hidden bg-[#161515]/8">
+    <div className="relative aspect-square w-full overflow-hidden bg-[#161515]/8 lg:h-full lg:min-h-[560px] lg:aspect-auto">
       <Image
         key={PHOTOS[index]}
         src={PHOTOS[index]}

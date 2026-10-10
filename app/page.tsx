@@ -3,7 +3,6 @@ import Nav from "@/components/Nav";
 import PersonalHero from "@/components/home/PersonalHero";
 import HomeNewsletterSignup from "@/components/home/HomeNewsletterSignup";
 import PersonalFooter from "@/components/home/PersonalFooter";
-import NowSection from "@/components/home/NowSection";
 import HomeArticlesSection from "@/components/home/HomeArticlesSection";
 import AboutTeaserSection from "@/components/home/AboutTeaserSection";
 import { DEFAULT_LANG, getAllArticles } from "@/lib/articles";
@@ -42,11 +41,6 @@ export const metadata: Metadata = {
 
 export default async function Home() {
   const articles = (await getAllArticles(DEFAULT_LANG)).slice(0, 3);
-  const nowLastUpdated = new Date().toLocaleDateString("en-US", {
-    year: "numeric",
-    month: "short",
-    day: "numeric",
-  });
 
   return (
     <>
@@ -68,7 +62,6 @@ export default async function Home() {
         <div className="relative z-10">
           <Nav />
           <PersonalHero />
-          <NowSection nowLastUpdated={nowLastUpdated} />
           <HomeNewsletterSignup />
           <HomeArticlesSection articles={articles} />
           <AboutTeaserSection />

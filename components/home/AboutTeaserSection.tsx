@@ -5,8 +5,12 @@ export default function AboutTeaserSection() {
   return (
     <section className="border-b border-[#161515]/25 bg-[#161515] px-4 py-10 md:px-8 md:py-14 lg:px-12">
       <div className="mx-auto w-full max-w-[1680px] pt-2">
-        <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(320px,420px)] lg:items-start">
-          <div className="lg:mx-auto lg:max-w-[620px] lg:text-right">
+        <div className="grid gap-6 lg:grid-cols-[minmax(420px,560px)_minmax(420px,560px)] lg:items-stretch lg:justify-center lg:gap-14">
+          <div className="w-full">
+            <AboutHeroStyleCarousel />
+          </div>
+
+          <div className="w-full">
             <h2
               className="uppercase text-[#F4F4F0]"
               style={{
@@ -18,13 +22,37 @@ export default function AboutTeaserSection() {
               About Me
             </h2>
             <p className="mt-5 text-lg leading-relaxed text-[#F4F4F0]">
-              I am a writer, builder, and magician of frameworks. I study how
-              people decide, how messages travel, and how identity can be
-              rebuilt in public without losing depth.
+              I work where software development meets marketing, and I think in
+              systems. I build websites, sales funnels and automations, and I
+              help businesses improve their digital presence with a clear,
+              actionable plan.
             </p>
             <p className="mt-4 text-lg leading-relaxed text-[#F4F4F0]/80">
-              This site is a working notebook: ideas in motion, experiments in
-              structure, and documents from the edge between clarity and chaos.
+              Right now I&apos;m building automations and a full marketing system
+              for{" "}
+              <a
+                href="https://www.creaholic.com/en"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="underline decoration-[#F4F4F0]/55 underline-offset-2 transition-colors hover:text-[#D0320E]"
+              >
+                Creaholic
+              </a>
+              , the Swiss innovation company in Biel founded by Elmar Mock,
+              co-inventor of the Swatch. I love working there. It uses
+              everything I know, from marketing to code. Alongside it, I keep
+              growing my own practice, guiding businesses toward a stronger
+              presence online.
+            </p>
+            <p className="mt-4 text-lg leading-relaxed text-[#F4F4F0]/80">
+              My goal is simple: to build a business where strategy and
+              execution live together, so the plans I write are plans I can
+              also build.
+            </p>
+            <p className="mt-4 text-lg leading-relaxed text-[#F4F4F0]/80">
+              This site is my working notebook: AI experiments, productivity
+              systems, marketing lessons and what I learn building a business
+              in Switzerland as an expat.
             </p>
             <Link
               href="/about"
@@ -37,26 +65,6 @@ export default function AboutTeaserSection() {
             >
               [ FULL STORY → ]
             </Link>
-
-            <div className="mt-6 rounded-[5px] bg-[#F4F4F0] p-5 text-left md:p-6">
-              <h3
-                className="uppercase text-[#161515]"
-                style={{
-                  fontFamily: "'TG Girthy', Impact, sans-serif",
-                  fontSize: "clamp(1.6rem, 3vw, 2.3rem)",
-                  lineHeight: 0.95,
-                }}
-              >
-                My art
-              </h3>
-              <p className="mt-2 text-base leading-relaxed text-[#161515]/75">
-                A light block for visual experiments and selected projects.
-              </p>
-            </div>
-          </div>
-
-          <div className="w-full lg:justify-self-start">
-            <AboutHeroStyleCarousel />
           </div>
         </div>
       </div>

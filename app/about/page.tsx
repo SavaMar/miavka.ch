@@ -153,14 +153,13 @@ export default function AboutPage() {
                   fontWeight: 300,
                 }}
               >
-                For years I believed I was stupid. Teachers lost me, books lost
-                me, so I decided the problem was me. Then people who could
-                explain hard things simply showed up, and I understood
-                everything. The problem was never my intelligence. It was how
-                information reached me. So I stopped waiting for the right
-                teacher and started finding my own - books, mentors,
-                experiments, now AI. I taught myself to learn anything. It&apos;s
-                the most useful thing I own.
+                I work where software development meets marketing. I think in
+                systems and I have strong pattern recognition: I see how the
+                parts of a business connect and where they break. I build brand
+                and marketing systems for businesses that move fast:
+                positioning, customer language, websites, funnels and
+                automations, the full presence that makes the right people
+                choose you.
               </p>
               <p
                 className="max-w-4xl text-lg leading-relaxed text-brand-black/80"
@@ -169,11 +168,12 @@ export default function AboutPage() {
                   fontWeight: 300,
                 }}
               >
-                I built a software career from zero. No degree, no bootcamp -
-                pet projects and stubbornness. It took me from Ukraine to
-                Krakow, Berlin, Zurich. I competed at national level in downhill
-                cycling. I picked up a camera and turned it into a way into
-                companies. None of it was given. All of it was learned.
+                I&apos;m self-taught. No degree, no bootcamp: pet projects and
+                stubbornness built my software career, and it took me from
+                Ukraine to Krakow, Berlin and Zurich. Along the way I competed
+                in downhill cycling at national level and turned a camera into
+                a way into companies. I learned how to learn anything, and
+                that&apos;s the most useful thing I own.
               </p>
               <p
                 className="max-w-4xl text-lg leading-relaxed text-brand-black/80"
@@ -182,12 +182,14 @@ export default function AboutPage() {
                   fontWeight: 300,
                 }}
               >
-                My method is the same on everything: decide what I actually
-                want, find the gap, fill it with knowledge, move. When something
-                stops fitting my life, I leave it. I&apos;ve left cities,
-                relationships, and versions of myself built on other people
-                instead of on me. What you build on someone else falls when they
-                do. What you build on what you know stays.
+                Right now I&apos;m at Creaholic, the Swiss invention studio in
+                Biel founded by Elmar Mock, co-inventor of the Swatch. I came
+                in and told them what was wrong with their digital presence,
+                what I could fix, and in what timeline. They saw the value,
+                gave me a chance to prove it, and now trust me to build a
+                better presence for them: the automations and the full
+                marketing system. It uses everything I know, code and marketing
+                together.
               </p>
               <p
                 className="max-w-4xl text-lg leading-relaxed text-brand-black/80"
@@ -196,24 +198,11 @@ export default function AboutPage() {
                   fontWeight: 300,
                 }}
               >
-                I think in systems, from the code. I read people fast, from a
-                harder school. I don&apos;t believe there&apos;s a real border between
-                physics and art - if you can solve the equation, you can draw
-                the thing. The border is a belief, not a fact.
-              </p>
-              <p
-                className="max-w-4xl text-lg leading-relaxed text-brand-black/80"
-                style={{
-                  fontFamily: "'Gotham Pro', 'Helvetica Neue', Arial, sans-serif",
-                  fontWeight: 300,
-                }}
-              >
-                Now I build brand and marketing systems for founders and
-                businesses that move fast - inside an invention studio in
-                Switzerland, and for my own clients. Positioning, customer
-                language, funnels, the full presence that makes the right people
-                choose you. I work with builders: curious, self-taught,
-                decisive, allergic to average.
+                Alongside Creaholic, I guide other businesses with a clear,
+                actionable plan to strengthen how they show up online. My
+                method is the same every time: decide what you actually want,
+                find the gap, fill it with knowledge, move. I work with
+                builders: curious, self-taught, decisive, allergic to average.
               </p>
               <p
                 className="max-w-4xl text-lg leading-relaxed text-brand-black/80"
@@ -224,6 +213,17 @@ export default function AboutPage() {
               >
                 I&apos;m sharp because vague help is useless. I&apos;m transparent
                 because I say what I see.
+              </p>
+              <p
+                className="max-w-4xl text-lg leading-relaxed text-brand-black/80"
+                style={{
+                  fontFamily: "'Gotham Pro', 'Helvetica Neue', Arial, sans-serif",
+                  fontWeight: 300,
+                }}
+              >
+                This site is my working notebook: AI experiments, productivity
+                systems, marketing lessons and what I learn building a business
+                in Switzerland as an expat.
               </p>
             </div>
           </div>

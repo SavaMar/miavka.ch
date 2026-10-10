@@ -78,13 +78,11 @@ export default function HomeNewsletterSignup() {
             to Notes
           </h2>
           <p className="mt-2 max-w-2xl text-base leading-relaxed text-[#F4F4F0]/80">
-            I share notes from real experience: what I learn, what I test, book
-            notes, marketing insights, and materials that are truly useful. I
-            try to{" "}
-            <span className="text-[1.08em] font-extrabold text-[#F4F4F0]">
-              educate myself
-            </span>
-            , find blind spots, and feed my curiosity.
+            Notes from the middle of the work: what I&apos;m watching, reading,
+            testing and building. The AI tools and prompts I actually use,
+            marketing insights that worked, and what it&apos;s really like
+            starting a business in Switzerland as an expat. Short, honest, and
+            ready for you to steal.
           </p>
         </div>
 
