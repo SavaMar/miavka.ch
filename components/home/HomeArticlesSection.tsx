@@ -1,6 +1,8 @@
 import Image from "next/image";
 import Link from "next/link";
 import type { ArticleListItem } from "@/lib/article-shared";
+import PressableCard from "@/components/motion/PressableCard";
+import Reveal from "@/components/motion/Reveal";
 
 function formatLongDate(iso: string): string {
   const d = new Date(iso.length === 10 ? `${iso}T12:00:00` : iso);
@@ -54,13 +56,15 @@ export default function HomeArticlesSection({
         </div>
 
         <ul className="mt-8 grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">
-          {articles.slice(0, 3).map((article) => (
+          {articles.slice(0, 3).map((article, index) => (
             <li key={article.slug}>
+              <Reveal className="h-full" delay={index * 0.06}>
               <Link
                 href={`/articles/${article.slug}`}
                 className="group block h-full cursor-pointer"
               >
-                <article className="flex h-full flex-col rounded-[5px] border border-[#161515]/25 bg-[#F4F4F0] p-5 transition-[transform,background-color,border-color] duration-200 ease-out group-hover:scale-[1.012] group-hover:border-[#D0320E]/60 group-hover:bg-[#F9F8F4]">
+                <PressableCard className="h-full">
+                <article className="flex h-full flex-col rounded-[5px] border border-[#161515]/25 bg-[#F4F4F0] p-5 transition-[background-color,border-color] duration-200 ease-out group-hover:border-[#D0320E]/60 group-hover:bg-[#F9F8F4]">
                   <Image
                     src={article.image}
                     alt={article.title}
@@ -118,7 +122,9 @@ export default function HomeArticlesSection({
                     {article.excerpt}
                   </p>
                 </article>
+                </PressableCard>
               </Link>
+              </Reveal>
             </li>
           ))}
         </ul>

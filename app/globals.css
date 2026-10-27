@@ -130,3 +130,14 @@
     color: #161515;
   }
 }
+
+/* ── Touch polish ───────────────────────────────────────── */
+html {
+  -webkit-tap-highlight-color: transparent;
+}
+
+a,
+button,
+[role="button"] {
+  touch-action: manipulation;
+}

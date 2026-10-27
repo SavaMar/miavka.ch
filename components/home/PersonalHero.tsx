@@ -2,6 +2,19 @@
 
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
+import { motion } from "motion/react";
+import { SPRING_SMOOTH } from "@/components/motion/springs";
+
+// Transform-only entrance: content stays visible pre-hydration (LCP, no-JS).
+function enter(delay: number, reduced: boolean) {
+  return reduced
+    ? {}
+    : {
+        initial: { y: 18 },
+        animate: { y: 0 },
+        transition: { ...SPRING_SMOOTH, delay },
+      };
+}
 
 const SIDE_IMAGES = ["/images/me/3.jpg", "/images/me/1.jpg"] as const;
 
@@ -274,7 +287,7 @@ export default function PersonalHero() {
 
       <div className="mx-auto flex min-h-[calc(100dvh-58px)] w-full max-w-[1680px] flex-col px-4 pb-12 pt-5 md:min-h-[calc(100dvh-64px)] md:px-8 md:pb-16 md:pt-7 lg:px-12 lg:pb-20">
         <div className="relative z-10 mt-3 grid grid-cols-[1fr_2fr_1fr] gap-[15px] md:mt-5">
-          <div className="relative min-h-0 overflow-hidden bg-[#161515]/8">
+          <motion.div {...enter(0, reducedMotion)} className="relative min-h-0 overflow-hidden bg-[#161515]/8">
             <Image
               src={SIDE_IMAGES[0]}
               alt="Mari Miavka portrait"
@@ -295,9 +308,9 @@ export default function PersonalHero() {
               }}
               aria-hidden
             />
-          </div>
+          </motion.div>
 
-          <div className="relative aspect-video overflow-hidden bg-[#161515]">
+          <motion.div {...enter(0.06, reducedMotion)} className="relative aspect-video overflow-hidden bg-[#161515]">
             <Image
               src="/images/hero-photo.jpg"
               alt=""
@@ -324,7 +337,12 @@ export default function PersonalHero() {
               className="absolute inset-0 flex items-center justify-center"
               aria-label="Play video (preview)"
             >
-              <span className="flex h-12 w-12 items-center justify-center border-2 border-[#D0320E] bg-[#F4F4F0]/90 text-[#D0320E] transition-colors hover:bg-[#D0320E] hover:text-[#F4F4F0] md:h-16 md:w-16">
+              <motion.span
+                whileHover={{ scale: 1.08 }}
+                whileTap={{ scale: 0.92 }}
+                transition={{ type: "spring", duration: 0.25, bounce: 0.15 }}
+                className="flex h-12 w-12 items-center justify-center border-2 border-[#D0320E] bg-[#F4F4F0]/90 text-[#D0320E] transition-colors hover:bg-[#D0320E] hover:text-[#F4F4F0] md:h-16 md:w-16"
+              >
                 <svg
                   viewBox="0 0 24 24"
                   className="ml-0.5 h-5 w-5 fill-current md:h-7 md:w-7"
@@ -332,11 +350,11 @@ export default function PersonalHero() {
                 >
                   <path d="M8 5v14l11-7z" />
                 </svg>
-              </span>
+              </motion.span>
             </button>
-          </div>
+          </motion.div>
 
-          <div className="relative min-h-0 overflow-hidden bg-[#161515]/8">
+          <motion.div {...enter(0.12, reducedMotion)} className="relative min-h-0 overflow-hidden bg-[#161515]/8">
             <Image
               src={SIDE_IMAGES[1]}
               alt="Mari Miavka portrait"
@@ -357,10 +375,11 @@ export default function PersonalHero() {
               }}
               aria-hidden
             />
-          </div>
+          </motion.div>
         </div>
 
-        <h1
+        <motion.h1
+          {...enter(0.2, reducedMotion)}
           className="relative z-10 mt-8 w-full uppercase text-[#161515] md:mt-10"
           style={{
             fontFamily: "'TG Girthy', Impact, sans-serif",
@@ -370,7 +389,7 @@ export default function PersonalHero() {
         >
           I write about thinking clearly, <span className="text-[#D0320E]">AI</span>, building
           systems, <span className="text-[#D0320E]">marketing</span> and reinventing yourself.
-        </h1>
+        </motion.h1>
       </div>
     </section>
   );

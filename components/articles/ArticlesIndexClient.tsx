@@ -3,7 +3,15 @@
 import { useMemo, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { AnimatePresence, motion } from "motion/react";
 import type { ArticleListItem } from "@/lib/article-shared";
+import PressableCard from "@/components/motion/PressableCard";
+import { SPRING_SMOOTH } from "@/components/motion/springs";
+
+const PRESS = {
+  whileTap: { scale: 0.94 },
+  transition: { type: "spring", duration: 0.2, bounce: 0 },
+} as const;
 
 type ArticleCategoryId =
   | "brand-story"
@@ -91,9 +99,10 @@ function CategoryBadge({
   compact?: boolean;
 }) {
   return (
-    <button
+    <motion.button
       type="button"
       onClick={onClick}
+      {...PRESS}
       className={`inline-flex cursor-pointer items-center rounded-full border-[1.5px] bg-transparent transition-colors ${
         compact ? "h-7 gap-1.5 px-3" : "h-8 gap-2 px-4"
       }`}
@@ -122,7 +131,7 @@ function CategoryBadge({
       >
         {category.label}
       </span>
-    </button>
+    </motion.button>
   );
 }
 
@@ -157,9 +166,10 @@ export default function ArticlesIndexClient({
   return (
     <>
       <div className="mb-8 flex flex-wrap items-center gap-3">
-        <button
+        <motion.button
           type="button"
           onClick={() => setActiveCategory("all")}
+          {...PRESS}
           className="inline-flex h-8 cursor-pointer items-center rounded-full border-[1.5px] border-brand-black/40 px-4 text-[11px] uppercase tracking-wide text-brand-black transition-colors hover:bg-brand-black/8"
           style={{
             fontFamily: "'Inter', 'Helvetica Neue', Arial, sans-serif",
@@ -171,7 +181,7 @@ export default function ArticlesIndexClient({
           aria-pressed={activeCategory === "all"}
         >
           All
-        </button>
+        </motion.button>
         {ARTICLE_CATEGORIES.map((category) => (
           <CategoryBadge
             key={category.id}
@@ -185,13 +195,22 @@ export default function ArticlesIndexClient({
       </div>
 
       <ul className="grid grid-cols-1 gap-8 md:grid-cols-3 md:gap-8 lg:gap-10">
+        <AnimatePresence mode="popLayout" initial={false}>
         {visibleItems.map(({ article, availableLangs, categoryId }) => {
           const href = articleCardHref(article.slug);
           const translationState = translationBadge(availableLangs);
           const category = categoryById.get(categoryId) ?? ARTICLE_CATEGORIES[0];
 
           return (
-            <li key={article.slug}>
+            <motion.li
+              key={article.slug}
+              layout="position"
+              initial={{ opacity: 0, scale: 0.96 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.96 }}
+              transition={SPRING_SMOOTH}
+            >
+              <PressableCard className="h-full">
               <article className="flex h-full flex-col overflow-hidden rounded-[10px] border-b bg-white shadow-md">
                 <div className="group flex h-full flex-col">
                   <Link
@@ -281,9 +300,11 @@ export default function ArticlesIndexClient({
                   </div>
                 </div>
               </article>
-            </li>
+              </PressableCard>
+            </motion.li>
           );
         })}
+        </AnimatePresence>
       </ul>
     </>
   );

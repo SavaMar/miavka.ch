@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import Nav from "@/components/Nav";
 import PersonalFooter from "@/components/home/PersonalFooter";
+import Reveal from "@/components/motion/Reveal";
 import { AtSign, Instagram, Linkedin, Youtube } from "lucide-react";
 
 export const metadata: Metadata = {
@@ -50,7 +51,11 @@ export default function AboutPage() {
         <section className="relative z-10 mt-10 px-6 md:px-10 lg:px-16">
           <div className="mx-auto max-w-7xl rounded-[10px] bg-[#0A0A0A] p-6 md:p-8 lg:p-10">
             <div className="grid gap-6 md:grid-cols-[320px_minmax(0,1fr)] md:items-center lg:grid-cols-[360px_minmax(0,1fr)]">
-              <div className="relative mx-auto aspect-4/5 w-full max-w-80 overflow-hidden rounded-md md:mx-0 lg:max-w-90">
+              <Reveal
+                fade={false}
+                y={20}
+                className="relative mx-auto aspect-4/5 w-full max-w-80 overflow-hidden rounded-md md:mx-0 lg:max-w-90"
+              >
                 <Image
                   src="/images/about/main.jpeg"
                   alt="Mari Miavka portrait"
@@ -59,8 +64,8 @@ export default function AboutPage() {
                   sizes="(max-width: 768px) 280px, (max-width: 1024px) 320px, 360px"
                   priority
                 />
-              </div>
-              <div>
+              </Reveal>
+              <Reveal fade={false} y={20} delay={0.08}>
                 <h1
                   className="text-brand-red"
                   style={{
@@ -111,13 +116,14 @@ export default function AboutPage() {
                   Watching someone I love die taught me the life I have is now,
                   not later.
                 </p>
-              </div>
+              </Reveal>
             </div>
 
             <div className="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
               {ABOUT_GALLERY_IMAGES.map((src, index) => (
-                <div
+                <Reveal
                   key={src}
+                  delay={(index % 3) * 0.05}
                   className="relative aspect-4/3 overflow-hidden rounded-lg bg-white/10"
                 >
                   <Image
@@ -127,14 +133,15 @@ export default function AboutPage() {
                     className="object-cover object-center"
                     sizes="(max-width: 640px) 100vw, (max-width: 1280px) 33vw, 16vw"
                   />
-                </div>
+                </Reveal>
               ))}
             </div>
           </div>
         </section>
 
         <section className="relative z-10 mt-8 px-6 md:px-10 lg:px-16">
-          <div className="mx-auto max-w-7xl rounded-[10px] bg-white p-6 shadow-[0_10px_30px_rgba(17,17,17,0.07)] md:p-8 lg:p-10">
+          <Reveal className="mx-auto max-w-7xl rounded-[10px] bg-white p-6 shadow-[0_10px_30px_rgba(17,17,17,0.07)] md:p-8 lg:p-10"
+          >
             <h1
               className="mb-5 text-brand-red"
               style={{
@@ -226,7 +233,7 @@ export default function AboutPage() {
                 in Switzerland as an expat.
               </p>
             </div>
-          </div>
+          </Reveal>
         </section>
       </main>
       <PersonalFooter />
