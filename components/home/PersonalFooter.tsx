@@ -57,10 +57,10 @@ const LINK_COLUMNS = [
       { label: "[ NEWSLETTER ]", href: "/newsletter" },
     ],
   },
-  {
-    title: "Products",
-    links: [{ label: "[ BRAND AUDIT ]", href: "/contact" }],
-  },
+  // {
+  //   title: "Products",
+  //   links: [{ label: "[ BRAND AUDIT ]", href: "/contact" }],
+  // },
 ] as const;
 
 function isExternalHref(href: string) {
