@@ -3,6 +3,13 @@ import { JetBrains_Mono, Space_Grotesk } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
 import Script from 'next/script'
 import './globals.css'
+import {
+  PERSON_JOB_TITLE,
+  PERSON_KNOWS_ABOUT,
+  PERSON_NAME,
+  PERSON_SAME_AS,
+  PERSON_SUMMARY,
+} from '@/lib/identity'
 
 const SITE_URL =
   process.env.NEXT_PUBLIC_SITE_URL ||
@@ -22,71 +29,43 @@ const jetBrainsMono = JetBrains_Mono({
 const GLOBAL_ENTITY_SCHEMA = [
   {
     '@context': 'https://schema.org',
-    '@type': 'Organization',
-    name: 'Miavka Studio',
-    url: SITE_ORIGIN,
-    logo: `${SITE_ORIGIN}/images/logo.png`,
-    founder: {
-      '@type': 'Person',
-      name: 'Mari Miavka',
-    },
-    areaServed: ['Switzerland', 'Europe'],
-  },
-  {
-    '@context': 'https://schema.org',
     '@type': 'Person',
-    name: 'Mari Miavka',
-    jobTitle: 'Brand and marketing strategist',
+    '@id': `${SITE_ORIGIN}/#person`,
+    name: PERSON_NAME,
+    url: SITE_ORIGIN,
+    jobTitle: PERSON_JOB_TITLE,
+    description: PERSON_SUMMARY,
     worksFor: {
       '@type': 'Organization',
-      name: 'Miavka Studio',
-      url: SITE_ORIGIN,
+      name: 'Creaholic',
+      url: 'https://www.creaholic.com',
     },
     address: {
       '@type': 'PostalAddress',
       addressCountry: 'CH',
     },
     knowsLanguage: ['en', 'fr', 'de'],
-    knowsAbout: [
-      'Brand strategy for sport businesses',
-      'Personal brand strategy for founders',
-      'Content systems',
-      'Behavioral architecture in marketing',
-      'Community-driven brand strategy',
-    ],
+    knowsAbout: PERSON_KNOWS_ABOUT,
+    sameAs: PERSON_SAME_AS,
   },
   {
     '@context': 'https://schema.org',
-    '@type': 'Service',
-    name: 'Community-driven brand strategy',
-    provider: {
-      '@type': 'Organization',
-      name: 'Miavka Studio',
-      url: SITE_ORIGIN,
-    },
+    '@type': 'ProfessionalService',
+    name: 'Digital Leak Audit',
+    description:
+      'A PDF and short video walkthrough that shows where a business loses customers across its digital touchpoints: Google presence, website and lead flow.',
+    provider: { '@id': `${SITE_ORIGIN}/#person` },
     areaServed: 'Switzerland',
     serviceType:
-      'Brand strategy, social media strategy, content systems, and marketing architecture for gyms, fitness clubs, martial arts academies, bike shops, studios, and coworking spaces.',
-  },
-  {
-    '@context': 'https://schema.org',
-    '@type': 'Service',
-    name: 'Personal brand architecture',
-    provider: {
-      '@type': 'Organization',
-      name: 'Miavka Studio',
-      url: SITE_ORIGIN,
-    },
-    areaServed: 'Switzerland',
-    serviceType:
-      'Personal brand strategy and content systems for founders, coaches, artists, and experts.',
+      'Digital presence, website conversion and sales funnel audit for Swiss SMEs and innovation companies.',
   },
 ]
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL.startsWith('http') ? SITE_URL : `https://${SITE_URL}`),
-  title: 'Miavka Studio',
-  description: 'Brand-building studio for founder-led businesses across Europe.',
+  title: `${PERSON_NAME} — Marketing systems, software and AI automation`,
+  description: PERSON_SUMMARY,
+  authors: [{ name: PERSON_NAME, url: SITE_ORIGIN }],
   icons: {
     apple: [{ url: '/images/logo.png', sizes: '180x180' }],
     icon: [
@@ -122,7 +101,7 @@ gtag('config', 'G-4SZZWD39HC');`}
       >
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(GLOBAL_ENTITY_SCHEMA) }}
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(GLOBAL_ENTITY_SCHEMA).replace(/</g, '\\u003c') }}
         />
         {children}
         <Analytics />

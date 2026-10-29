@@ -13,23 +13,23 @@ const ARTICLES_PATTERN_COLOR = "#BAB7B7";
 const ARTICLES_PATTERN_OPACITY = 0.3;
 
 export const metadata: Metadata = {
-  title: "Articles | Miavka Studio",
+  title: "Articles | Mari Miavka",
   description:
-    "Brand breakdowns, systems, and stories for founder-led businesses.",
+    "Notes on marketing systems, AI, automation and building a business in Switzerland.",
   alternates: {
     canonical: "/articles",
   },
   openGraph: {
     type: "website",
-    title: "Articles | Miavka Studio",
+    title: "Articles | Mari Miavka",
     description:
-      "Brand breakdowns, systems, and stories for founder-led businesses.",
+      "Notes on marketing systems, AI, automation and building a business in Switzerland.",
     url: "/articles",
-    siteName: "Miavka Studio",
+    siteName: "Mari Miavka",
     images: [
       {
         url: "/images/articles/boxraw.jpg",
-        alt: "Miavka Studio articles",
+        alt: "Mari Miavka articles",
       },
     ],
   },

@@ -47,6 +47,7 @@ const LINK_COLUMNS = [
     links: [
       { label: "[ ABOUT ]", href: "/about" },
       { label: "[ CONTACT ]", href: "/contact" },
+      { label: "[ BOOKS ]", href: "/books" },
     ],
   },
   {
@@ -140,7 +141,7 @@ export default function PersonalFooter() {
       <div className="border-t border-[#F4F4F0]/25">
         <div className="mx-auto w-full max-w-[1680px] px-4 py-4 md:px-8 lg:px-12">
           <p className="text-[10px] uppercase text-[#F4F4F0]/45">
-            © 2026 Mariia Yemko Miavka · Miavka Studio · All rights reserved.
+            © 2026 Mariia Yemko Miavka · Mari Miavka · All rights reserved.
           </p>
         </div>
       </div>

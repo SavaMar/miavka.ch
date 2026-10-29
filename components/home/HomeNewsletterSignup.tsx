@@ -63,7 +63,7 @@ export default function HomeNewsletterSignup() {
               letterSpacing: "0.08em",
             }}
           >
-            [ NEWSLETTER ]
+            [ NOT READY YET? ]
           </p>
           <h2
             className="mt-2 uppercase text-[#F4F4F0]"

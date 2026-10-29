@@ -116,7 +116,7 @@ export async function generateMetadata({
   }
   if (!article) {
     return {
-      title: "Article | Miavka Studio",
+      title: "Article | Mari Miavka",
       alternates: {
         canonical: canonicalPath,
         languages: languageAlternates,
@@ -124,7 +124,7 @@ export async function generateMetadata({
     };
   }
 
-  const articleTitle = `${article.frontmatter.title} | Miavka Studio`;
+  const articleTitle = `${article.frontmatter.title} | Mari Miavka`;
   const articleDescription = article.frontmatter.excerpt;
   const imageUrl = new URL(article.frontmatter.image, SITE_ORIGIN).toString();
   const effectiveLang = article.frontmatter.lang
@@ -143,7 +143,7 @@ export async function generateMetadata({
       title: articleTitle,
       description: articleDescription,
       url: canonicalPath,
-      siteName: "Miavka Studio",
+      siteName: "Mari Miavka",
       locale: OG_LOCALE[effectiveLang],
       images: [
         {
@@ -269,12 +269,9 @@ export default async function ArticlePage({ params, searchParams }: Props) {
       name: "Mari Miavka",
     },
     publisher: {
-      "@type": "Organization",
-      name: "Miavka Studio",
-      logo: {
-        "@type": "ImageObject",
-        url: new URL("/images/logo.png", SITE_ORIGIN).toString(),
-      },
+      "@type": "Person",
+      name: "Mari Miavka",
+      url: SITE_ORIGIN,
     },
   };
   const breadcrumbJsonLd = {

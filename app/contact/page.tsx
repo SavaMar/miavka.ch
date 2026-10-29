@@ -13,7 +13,7 @@ const CONTACT_PATTERN_OPACITY = 0.3;
 export const metadata: Metadata = {
   title: "Contact | Mari Miavka",
   description:
-    "Contact Mari Miavka for collaboration, support, and online presence strategy.",
+    "Contact Mari Miavka with questions about marketing systems, websites, funnels and automation.",
 };
 
 export default function ContactPage() {
@@ -64,8 +64,15 @@ export default function ContactPage() {
                 fontWeight: 300,
               }}
             >
-              Tell me if you have questions, want to work together, collaborate,
-              or want my help with your online presence.
+              Want to know where your business loses customers online? Start with
+              the{" "}
+              <Link
+                href="/#quiz"
+                className="underline decoration-white/55 underline-offset-2 hover:text-brand-red"
+              >
+                free Digital Leak Audit
+              </Link>
+              . For anything else, send me a question below.
             </p>
           </div>
         </section>

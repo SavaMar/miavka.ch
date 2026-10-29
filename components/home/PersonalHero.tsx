@@ -2,8 +2,10 @@
 
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
-import { motion } from "motion/react";
+import Link from "next/link";
+import { motion, useScroll, useSpring, useTransform } from "motion/react";
 import { SPRING_SMOOTH } from "@/components/motion/springs";
+import { MONO_STYLE, PRIMARY_BUTTON_CLASS } from "@/components/audit/ui";
 
 // Transform-only entrance: content stays visible pre-hydration (LCP, no-JS).
 function enter(delay: number, reduced: boolean) {
@@ -22,6 +24,23 @@ export default function PersonalHero() {
   const [reducedMotion, setReducedMotion] = useState(false);
   const heroRef = useRef<HTMLElement | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
+
+  // Scroll-linked depth: the video frame settles back as the page moves on,
+  // the way Apple's product pages let the hero recede. Springs smooth wheel jumps.
+  const { scrollYProgress } = useScroll({
+    target: heroRef,
+    offset: ["start start", "end start"],
+  });
+  const frameScale = useSpring(useTransform(scrollYProgress, [0, 1], [1, 0.9]), {
+    stiffness: 120,
+    damping: 30,
+    mass: 0.4,
+  });
+  const frameY = useSpring(useTransform(scrollYProgress, [0, 1], [0, 40]), {
+    stiffness: 120,
+    damping: 30,
+    mass: 0.4,
+  });
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -310,7 +329,11 @@ export default function PersonalHero() {
             />
           </motion.div>
 
-          <motion.div {...enter(0.06, reducedMotion)} className="relative aspect-video overflow-hidden bg-[#161515]">
+          <motion.div
+            {...enter(0.06, reducedMotion)}
+            style={reducedMotion ? undefined : { scale: frameScale, y: frameY }}
+            className="relative aspect-video origin-top overflow-hidden bg-[#161515]"
+          >
             <Image
               src="/images/hero-photo.jpg"
               alt=""
@@ -331,7 +354,14 @@ export default function PersonalHero() {
               }}
               aria-hidden
             />
-            {/* Swap play button for iframe when you have a video ID */}
+            {/* VIDEO SLOT: swap the play button for a lazy-loaded iframe/video once
+                the 60-90 second audit intro exists. Keep it click-to-load. */}
+            <span
+              className="absolute bottom-2 left-2 z-10 border border-dashed border-[#D0320E] bg-[#F4F4F0]/90 px-2 py-1 text-[9px] uppercase text-[#D0320E] md:bottom-3 md:left-3 md:text-[11px]"
+              style={MONO_STYLE}
+            >
+              [PLACEHOLDER: 60-90 s audit intro video]
+            </span>
             <button
               type="button"
               className="absolute inset-0 flex items-center justify-center"
@@ -378,18 +408,38 @@ export default function PersonalHero() {
           </motion.div>
         </div>
 
+        {/*
+          Headline alternatives (swap into the h1 text):
+          1. "Your business is good. Your website doesn't show it. Find out why."
+          2. "Stop paying to fix the wrong thing. Find where you actually lose customers."
+          3. "See where people drop off online. One free audit."
+        */}
         <motion.h1
           {...enter(0.2, reducedMotion)}
-          className="relative z-10 mt-8 w-full uppercase text-[#161515] md:mt-10"
+          className="relative z-10 mt-8 w-full max-w-[22ch] uppercase text-[#161515] md:mt-10 md:max-w-none"
           style={{
             fontFamily: "'TG Girthy', Impact, sans-serif",
             fontSize: "clamp(1.65rem, 5.2vw, 3.75rem)",
             lineHeight: 1.04,
           }}
         >
-          I write about thinking clearly, <span className="text-[#D0320E]">AI</span>, building
-          systems, <span className="text-[#D0320E]">marketing</span> and reinventing yourself.
+          Know where you&apos;re <span className="text-[#D0320E]">losing customers</span>{" "}
+          online before you pay anyone to fix it.
         </motion.h1>
+
+        <motion.div
+          {...enter(0.28, reducedMotion)}
+          className="relative z-10 mt-5 flex flex-col items-start gap-5 md:mt-6 md:flex-row md:items-center md:gap-8"
+        >
+          <Link href="#quiz" className={PRIMARY_BUTTON_CLASS} style={MONO_STYLE}>
+            [ GET YOUR DIGITAL LEAK AUDIT → ]
+          </Link>
+          <p className="max-w-xl text-base leading-relaxed text-[#161515]/75">
+            Free. By Mari Miavka. I also write about thinking clearly,{" "}
+            <span className="text-[#D0320E]">AI</span>, systems and{" "}
+            <span className="text-[#D0320E]">marketing</span>.
+          </p>
+        </motion.div>
       </div>
     </section>
   );

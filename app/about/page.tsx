@@ -8,7 +8,7 @@ import { AtSign, Instagram, Linkedin, Youtube } from "lucide-react";
 
 export const metadata: Metadata = {
   title: "About | Mari Miavka",
-  description: "About Mari Miavka — writer, builder, and systems thinker.",
+  description: "About Mari Miavka — marketer, software developer and AI and automation strategist.",
 };
 
 const ABOUT_BG_COLOR = "#FFFFFF";

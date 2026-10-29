@@ -44,16 +44,6 @@ export default function AboutTeaserSection() {
               growing my own practice, guiding businesses toward a stronger
               presence online.
             </p>
-            <p className="mt-4 text-lg leading-relaxed text-[#F4F4F0]/80">
-              My goal is simple: to build a business where strategy and
-              execution live together, so the plans I write are plans I can
-              also build.
-            </p>
-            <p className="mt-4 text-lg leading-relaxed text-[#F4F4F0]/80">
-              This site is my working notebook: AI experiments, productivity
-              systems, marketing lessons and what I learn building a business
-              in Switzerland as an expat.
-            </p>
             <Link
               href="/about"
               className="mt-6 inline-block rounded-[5px] border border-[#F4F4F0] px-4 py-2 text-[11px] uppercase text-[#F4F4F0] transition-colors hover:bg-[#D0320E] hover:text-[#161515]"

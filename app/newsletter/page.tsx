@@ -7,9 +7,9 @@ import type { HomeCarouselCard } from "@/lib/article-shared";
 import { getAllArticles, getAvailableLanguages } from "@/lib/articles";
 
 export const metadata: Metadata = {
-  title: "Newsletter | Miavka Studio",
+  title: "Newsletter | Mari Miavka",
   description:
-    "Subscribe to weekly notes from Mari Miavka on brand strategy, sport business growth, and visibility systems.",
+    "Subscribe to notes from Mari Miavka on marketing systems, AI, automation and building a business in Switzerland.",
 };
 
 export default async function NewsletterPage() {

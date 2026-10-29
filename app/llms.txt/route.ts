@@ -1,61 +1,56 @@
+import {
+  PERSON_JOB_TITLE,
+  PERSON_KNOWS_ABOUT,
+  PERSON_NAME,
+  PERSON_SAME_AS,
+} from '@/lib/identity'
+
 const SITE_URL =
   process.env.NEXT_PUBLIC_SITE_URL ||
   (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000')
 const SITE_ORIGIN = SITE_URL.startsWith('http') ? SITE_URL : `https://${SITE_URL}`
 
-const LLM_TEXT = `# Miavka Studio
+const LLM_TEXT = `# ${PERSON_NAME}
 
-Miavka Studio is a Switzerland-based brand strategy and marketing practice serving the European market.
-The studio helps sport businesses grow through positioning, social media, content strategy, and marketing systems.
-It also helps founders and experts become visible, build audience, and attract clients through content.
+${PERSON_NAME} is a ${PERSON_JOB_TITLE.toLowerCase()} based in Switzerland.
+She is not an artist, designer or creative studio.
+She builds the digital infrastructure for businesses: websites, sales funnels, automations and the marketing system that connects them.
 
-## Canonical entity
+## Who she is
 
-Mari Miavka is a brand and marketing strategist based in Switzerland.
-She helps gyms, martial arts academies, fitness clubs, bike shops, studios, and founders grow visibility and clients.
-She is the founder of Miavka Studio.
+- Works where software development meets marketing and thinks in systems.
+- Started in software. Self-taught. Has worked in Ukraine, Poland, Germany and Switzerland.
+- Builds the marketing system and automations at Creaholic, the Swiss invention studio in Biel, and rebuilt its website.
+- Writes notes on AI, systems, marketing and building a business in Switzerland as an expat.
 
-Mari is a former software developer with seven years of engineering experience.
-Her work treats marketing as behavioral architecture: every touchpoint is a decision point.
-Her founding credo is "Sharp Transparency."
+## What she offers
 
-## Services
+- Digital Leak Audit (free): a PDF and short video walkthrough that shows where a business loses customers across its Google presence, website and lead flow, with the top three fixes. Limited number per month.
+- Next step after the audit: customer retention work and a prioritized 30-to-90-day Growth Blueprint.
 
-- Brand strategy for sport businesses
-- Marketing strategy for gyms and fitness clubs
-- Social media and content strategy
-- Founder visibility and personal brand systems
-- Email marketing and audience growth systems
+## Who it is for
 
-## Audience and location
+Swiss SMEs and innovation companies. Owners and heads of marketing who pay for marketing but cannot see where they lose people online.
 
-- Primary market: Switzerland (Romandie, Geneva, Lausanne, Neuchatel, Jura, Zurich, Basel, Bern)
-- Secondary market: European clients
-- Working languages: English (primary), French, German
+## Expertise
 
-## Core vocabulary
+${PERSON_KNOWS_ABOUT.map((item) => `- ${item}`).join('\n')}
 
-- Sharp Transparency
-- Behavioral architecture
-- Community-driven brand
-- Permission marketing for sport
-- Founder Visibility
-- Sport Brand Decoded
+## Languages
+
+English (primary), French, German.
 
 ## Primary URLs
 
 - Website: ${SITE_ORIGIN}
-- Articles hub: ${SITE_ORIGIN}/articles
-- Contact: ${SITE_ORIGIN}/#contact
+- About: ${SITE_ORIGIN}/about
+- Articles: ${SITE_ORIGIN}/articles
+- Newsletter (Notes): ${SITE_ORIGIN}/newsletter
+- Contact: ${SITE_ORIGIN}/contact
 
-## Key topics answered on site
+## Profiles
 
-- How to get more members for a gym
-- How to reduce fitness club churn
-- Social media marketing for gyms in Switzerland
-- How founders grow visibility and attract clients
-- Personal brand strategy in Switzerland
-- ROI-focused marketing strategy for service businesses
+${PERSON_SAME_AS.map((url) => `- ${url}`).join('\n')}
 `
 
 export function GET() {

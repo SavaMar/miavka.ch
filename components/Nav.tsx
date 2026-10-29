@@ -5,12 +5,12 @@ import Image from "next/image";
 import Link from "next/link";
 
 const NAV_LINKS = [
-  { href: "/books", label: "[ BOOKS ]" },
-  { href: "/articles", label: "[ ARTICLES ]" },
+  { href: "/#proof", label: "[ WORK ]" },
   { href: "/about", label: "[ ABOUT ]" },
-  { href: "/contact", label: "[ CONTACT ]" },
   { href: "/newsletter", label: "[ NOTES ]" },
 ] as const;
+
+const NAV_CTA = { href: "/#quiz", label: "GET YOUR AUDIT" } as const;
 
 type NavProps = {
   theme?: "light" | "dark";
@@ -69,6 +69,12 @@ export default function Nav({ theme = "dark" }: NavProps) {
                 {item.label}
               </Link>
             ))}
+            <Link
+              href={NAV_CTA.href}
+              className="rounded-[5px] border border-[#D0320E] bg-[#D0320E] px-3 py-2 text-[11px] uppercase text-[#F4F4F0] transition-colors hover:bg-[#F4F4F0] hover:text-[#161515] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#D0320E]"
+            >
+              {NAV_CTA.label}
+            </Link>
           </div>
 
           <button
@@ -119,6 +125,13 @@ export default function Nav({ theme = "dark" }: NavProps) {
                 {item.label}
               </Link>
             ))}
+            <Link
+              href={NAV_CTA.href}
+              className="mt-1 inline-flex min-h-11 items-center justify-center rounded-[5px] border border-[#D0320E] bg-[#D0320E] px-3 text-[11px] uppercase text-[#F4F4F0]"
+              onClick={() => setMenuOpen(false)}
+            >
+              {NAV_CTA.label}
+            </Link>
           </div>
         ) : null}
       </div>

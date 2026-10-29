@@ -131,6 +131,13 @@
   }
 }
 
+/* ── Smooth anchor scrolling (audit CTA → quiz) ─────────── */
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
 /* ── Touch polish ───────────────────────────────────────── */
 html {
   -webkit-tap-highlight-color: transparent;
