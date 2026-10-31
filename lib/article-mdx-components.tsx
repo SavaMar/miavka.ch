@@ -3,6 +3,7 @@ import { isValidElement } from "react";
 import { Fraunces } from "next/font/google";
 import type { ArticleSection } from "./articles";
 import EmailCapture from "@/components/articles/EmailCapture";
+import { DecisionLoop, GardenLoop } from "@/components/articles/SystemLoopDiagrams";
 
 const fraunces = Fraunces({
   subsets: ["latin"],
@@ -148,6 +149,8 @@ export function createArticleMdxComponents(sections: ArticleSection[]) {
     ),
     hr: () => null,
     EmailCapture,
+    DecisionLoop,
+    GardenLoop,
     ul: ({ className, ...rest }: ComponentPropsWithoutRef<"ul">) => (
       <ul
         className={`${bodyClass} mt-4 list-disc space-y-2 pl-5 first:mt-0 ${className ?? ""}`}
