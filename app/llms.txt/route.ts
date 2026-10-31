@@ -4,11 +4,8 @@ import {
   PERSON_NAME,
   PERSON_SAME_AS,
 } from '@/lib/identity'
-
-const SITE_URL =
-  process.env.NEXT_PUBLIC_SITE_URL ||
-  (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000')
-const SITE_ORIGIN = SITE_URL.startsWith('http') ? SITE_URL : `https://${SITE_URL}`
+import { AUDIT_STAGE_COUNT_WORD, auditStagesSentence } from '@/lib/audit-offer'
+import { SITE_ORIGIN } from '@/lib/site-url'
 
 const LLM_TEXT = `# ${PERSON_NAME}
 
@@ -25,7 +22,7 @@ She builds the digital infrastructure for businesses: websites, sales funnels, a
 
 ## What she offers
 
-- Digital Leak Audit (free): a PDF and short video walkthrough that shows where a business loses customers across its Google presence, website and lead flow, with the top three fixes. Limited number per month.
+- Digital Leak Audit (free): a PDF and short video walkthrough that shows where a business loses customers across ${AUDIT_STAGE_COUNT_WORD} stages (${auditStagesSentence()}), with a status for each stage, an explanation of how it was rated, and the top three fixes. Limited number per month.
 - Next step after the audit: customer retention work and a prioritized 30-to-90-day Growth Blueprint.
 
 ## Who it is for

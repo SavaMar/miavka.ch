@@ -1,8 +1,9 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import BookCover from "@/components/books/BookCover";
 
-type BookScore = number | "lifechanging";
+export type BookScore = number | "lifechanging";
 
 export type BookItem = {
   id: number;
@@ -32,46 +33,6 @@ function scoreToFilterKey(score: BookScore): "lifechanging" | "top-pick" | "othe
   if (score === "lifechanging") return "lifechanging";
   if (typeof score === "number" && score >= 5) return "top-pick";
   return "other";
-}
-
-function coverProxyUrl(url: string): string {
-  if (!url) return "";
-  return `https://images.weserv.nl/?url=${encodeURIComponent(
-    url.replace(/^https?:\/\//, "")
-  )}`;
-}
-
-function BookCover({ book }: { book: BookItem }) {
-  const [src, setSrc] = useState(book.cover);
-  const [didRetryViaProxy, setDidRetryViaProxy] = useState(false);
-  const [showFallback, setShowFallback] = useState(!book.cover);
-
-  if (showFallback) {
-    return (
-      <div className="absolute inset-0 grid place-items-center bg-[#201f1c] p-3 text-center text-sm font-semibold leading-tight text-[#F4F4F0]/75">
-        {book.title}
-      </div>
-    );
-  }
-
-  return (
-    // eslint-disable-next-line @next/next/no-img-element
-    <img
-      src={src}
-      alt={`${book.title} cover`}
-      loading="lazy"
-      referrerPolicy="no-referrer"
-      className="h-full w-full object-contain"
-      onError={() => {
-        if (!didRetryViaProxy && book.cover) {
-          setDidRetryViaProxy(true);
-          setSrc(coverProxyUrl(book.cover));
-          return;
-        }
-        setShowFallback(true);
-      }}
-    />
-  );
 }
 
 export default function BooksLibrary({ books }: { books: BookItem[] }) {
@@ -236,7 +197,7 @@ export default function BooksLibrary({ books }: { books: BookItem[] }) {
               className="group cursor-pointer overflow-hidden rounded-[5px] border border-[#F4F4F0]/18 bg-[#1B1A18] text-left transition-[transform,border-color] duration-200 hover:scale-[1.01] hover:border-[#D0320E]/65"
             >
               <div className="relative aspect-[2/3]">
-                <BookCover book={book} />
+                <BookCover title={book.title} cover={book.cover} />
                 <div className="pointer-events-none absolute inset-0 bg-[#161515]/0 transition-colors duration-300 group-hover:bg-[#161515]/18" />
                 <div className="pointer-events-none absolute inset-0 grid place-items-center">
                   {/* Subtle brand mark appears on hover */}

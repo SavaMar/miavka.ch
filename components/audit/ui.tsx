@@ -14,6 +14,12 @@ export const DISPLAY_STYLE = {
 
 type Tone = "light" | "dark";
 
+const SECTION_TITLE_STYLE = {
+  ...DISPLAY_STYLE,
+  fontSize: "clamp(1.9rem, 4.6vw, 4.2rem)",
+  lineHeight: 0.95,
+} as const;
+
 /** Full-width homepage section that follows the existing cream/black rhythm. */
 export function Section({
   id,
@@ -21,6 +27,9 @@ export function Section({
   label,
   title,
   intro,
+  lead,
+  aside,
+  animateTitle = true,
   children,
 }: {
   id?: string;
@@ -28,42 +37,76 @@ export function Section({
   label: string;
   title: string;
   intro?: ReactNode;
+  /** Rendered above the section heading, without animation. */
+  lead?: ReactNode;
+  /** Right of the heading from md up; between the title and the intro on phones. */
+  aside?: ReactNode;
+  /** Anchor targets should stay static so the heading is never mid-reveal on arrival. */
+  animateTitle?: boolean;
   children?: ReactNode;
 }) {
   const dark = tone === "dark";
   return (
     <section
       id={id}
-      className={`scroll-mt-14 border-b px-4 py-12 md:px-8 md:py-16 lg:px-12 ${
+      className={`scroll-mt-20 border-b px-4 py-12 md:px-8 md:py-16 lg:px-12 ${
         dark
           ? "border-[#F4F4F0]/12 bg-[#161515] text-[#F4F4F0]"
           : "border-[#161515]/25 bg-[#F4F4F0] text-[#161515]"
       }`}
     >
       <div className="mx-auto w-full max-w-[1680px]">
-        <div className="border-t-4 border-[#D0320E] pt-5">
-          <Reveal>
+        {lead ? <div className="mb-10 md:mb-12">{lead}</div> : null}
+        <div
+          className={`border-t-4 border-[#D0320E] pt-5 ${
+            aside
+              ? "grid md:grid-cols-[minmax(0,1fr)_minmax(260px,38%)] md:grid-rows-[auto_auto_1fr] md:gap-x-10 lg:gap-x-14"
+              : ""
+          }`}
+        >
+          {animateTitle ? (
+            <Reveal className="md:col-start-1">
+              <p
+                className={`text-[11px] uppercase ${
+                  dark ? "text-[#F4F4F0]/75" : "text-[#161515]/75"
+                }`}
+                style={MONO_STYLE}
+              >
+                [ {label} ]
+              </p>
+            </Reveal>
+          ) : (
             <p
-              className={`text-[11px] uppercase ${
+              className={`text-[11px] uppercase md:col-start-1 ${
                 dark ? "text-[#F4F4F0]/75" : "text-[#161515]/75"
               }`}
               style={MONO_STYLE}
             >
               [ {label} ]
             </p>
-          </Reveal>
-          <RevealText
-            text={title}
-            as="h2"
-            className="mt-2 max-w-5xl uppercase"
-            style={{
-              ...DISPLAY_STYLE,
-              fontSize: "clamp(1.9rem, 4.6vw, 4.2rem)",
-              lineHeight: 0.95,
-            }}
-          />
+          )}
+          {animateTitle ? (
+            <RevealText
+              text={title}
+              as="h2"
+              className="mt-2 max-w-5xl uppercase md:col-start-1"
+              style={SECTION_TITLE_STYLE}
+            />
+          ) : (
+            <h2 className="mt-2 max-w-5xl uppercase md:col-start-1" style={SECTION_TITLE_STYLE}>
+              {title}
+            </h2>
+          )}
+          {aside ? (
+            <Reveal
+              delay={0.1}
+              className="mt-6 md:col-start-2 md:row-span-3 md:row-start-1 md:mt-0"
+            >
+              {aside}
+            </Reveal>
+          ) : null}
           {intro ? (
-            <Reveal delay={0.1}>
+            <Reveal delay={0.1} className="md:col-start-1">
               <div
                 className={`mt-5 max-w-3xl space-y-3 text-lg leading-relaxed ${
                   dark ? "text-[#F4F4F0]/82" : "text-[#161515]/80"
@@ -80,22 +123,10 @@ export function Section({
   );
 }
 
-/** Visibly marked gap for proof the owner still has to supply. */
-export function Placeholder({
-  children,
-  className = "",
-}: {
-  children: ReactNode;
-  className?: string;
-}) {
-  return (
-    <span
-      className={`inline-block border border-dashed border-[#D0320E] px-2 py-1 text-[11px] uppercase text-[#D0320E] ${className}`}
-      style={MONO_STYLE}
-    >
-      [PLACEHOLDER: {children}]
-    </span>
-  );
+/** Text that is safe to show publicly: empty and placeholder values become "". */
+export function visibleText(value: string | null | undefined): string {
+  const text = (value ?? "").trim();
+  return /placeholder/i.test(text) ? "" : text;
 }
 
 export const PRIMARY_BUTTON_CLASS =

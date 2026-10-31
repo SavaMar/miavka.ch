@@ -3,6 +3,7 @@ import { JetBrains_Mono, Space_Grotesk } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
 import Script from 'next/script'
 import './globals.css'
+import { AUDIT_STAGE_COUNT_WORD, auditStagesSentence } from '@/lib/audit-offer'
 import {
   PERSON_JOB_TITLE,
   PERSON_KNOWS_ABOUT,
@@ -10,11 +11,8 @@ import {
   PERSON_SAME_AS,
   PERSON_SUMMARY,
 } from '@/lib/identity'
+import { SITE_ORIGIN } from '@/lib/site-url'
 
-const SITE_URL =
-  process.env.NEXT_PUBLIC_SITE_URL ||
-  (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000')
-const SITE_ORIGIN = SITE_URL.startsWith('http') ? SITE_URL : `https://${SITE_URL}`
 const spaceGrotesk = Space_Grotesk({
   subsets: ['latin'],
   weight: ['400', '500', '600', '700'],
@@ -53,7 +51,7 @@ const GLOBAL_ENTITY_SCHEMA = [
     '@type': 'ProfessionalService',
     name: 'Digital Leak Audit',
     description:
-      'A PDF and short video walkthrough that shows where a business loses customers across its digital touchpoints: Google presence, website and lead flow.',
+      `A PDF and short video walkthrough that shows where a business loses customers across ${AUDIT_STAGE_COUNT_WORD} stages: ${auditStagesSentence()}.`,
     provider: { '@id': `${SITE_ORIGIN}/#person` },
     areaServed: 'Switzerland',
     serviceType:
@@ -62,7 +60,7 @@ const GLOBAL_ENTITY_SCHEMA = [
 ]
 
 export const metadata: Metadata = {
-  metadataBase: new URL(SITE_URL.startsWith('http') ? SITE_URL : `https://${SITE_URL}`),
+  metadataBase: new URL(SITE_ORIGIN),
   title: `${PERSON_NAME} — Marketing systems, software and AI automation`,
   description: PERSON_SUMMARY,
   authors: [{ name: PERSON_NAME, url: SITE_ORIGIN }],

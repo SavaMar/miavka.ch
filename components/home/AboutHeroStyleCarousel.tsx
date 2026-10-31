@@ -28,7 +28,7 @@ export default function AboutHeroStyleCarousel() {
   }
 
   return (
-    <div className="relative aspect-square w-full overflow-hidden bg-[#161515]/8 lg:h-full lg:min-h-[560px] lg:aspect-auto">
+    <div className="relative aspect-square w-full overflow-hidden bg-[#161515]/8">
       <AnimatePresence initial={false} custom={direction} mode="popLayout">
         <motion.div
           key={PHOTOS[index]}
@@ -54,7 +54,7 @@ export default function AboutHeroStyleCarousel() {
             alt={`Mari Miavka portrait ${index + 1}`}
             fill
             draggable={false}
-            sizes="(max-width: 1024px) 100vw, 45vw"
+            sizes="(min-width: 768px) 38vw, 100vw"
             className="select-none object-cover object-left contrast-110 saturate-105"
             style={{ filter: "contrast(1.08) saturate(1.06) brightness(0.98)" }}
             priority={index === 0}

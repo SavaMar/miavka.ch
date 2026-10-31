@@ -20,16 +20,9 @@ import {
   getSlugDirectories,
   normalizeLang,
 } from "@/lib/articles";
+import { SITE_ORIGIN } from "@/lib/site-url";
 
 const ARTICLE_ROOT_ID = "article-read-root";
-const SITE_URL =
-  process.env.NEXT_PUBLIC_SITE_URL ||
-  (process.env.VERCEL_URL
-    ? `https://${process.env.VERCEL_URL}`
-    : "http://localhost:3000");
-const SITE_ORIGIN = SITE_URL.startsWith("http")
-  ? SITE_URL
-  : `https://${SITE_URL}`;
 
 const EMPTY_SECTIONS: ArticleSection[] = [];
 const ARTICLES_BG_COLOR = "#FFFFFF";
@@ -222,7 +215,8 @@ export default async function ArticlePage({ params, searchParams }: Props) {
 
   const { frontmatter, content } = compiled;
   const available = await getAvailableLanguages(slug);
-  const shouldShowDiscoveryCta = !slug.toLowerCase().startsWith("addendum-");
+  const shouldShowDiscoveryCta =
+    !slug.toLowerCase().startsWith("addendum-") && frontmatter.discoveryCta !== false;
   const discoveryCtaCopy = DISCOVERY_CTA_COPY[effectiveLang];
   const allArticles = await getAllArticles(effectiveLang);
   const currentTags = new Set((frontmatter.tags ?? []).map((tag) => tag.toLowerCase()));

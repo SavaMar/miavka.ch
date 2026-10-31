@@ -1,26 +1,25 @@
 import Link from "next/link";
 import Reveal from "@/components/motion/Reveal";
 import PressableCard from "@/components/motion/PressableCard";
-import { DISPLAY_STYLE, MONO_STYLE, Section } from "@/components/audit/ui";
+import AboutHeroStyleCarousel from "@/components/home/AboutHeroStyleCarousel";
+import { DISPLAY_STYLE, MONO_STYLE, Section, visibleText } from "@/components/audit/ui";
+import { AUDIT_DELIVERY_TIME, AUDIT_STAGES, type AuditStage } from "@/lib/audit-offer";
+import { PROOF } from "@/content/proof";
 
-const LEAKS = [
-  {
-    stage: "Google",
-    text: "Someone searches for what you do. A competitor shows up. You don't, or your listing looks half done.",
-  },
-  {
-    stage: "Website",
-    text: "They land on your site. The headline is vague, it's slow on a phone, and they're gone in seconds.",
-  },
-  {
-    stage: "Form",
-    text: "They want to ask something. The form wants too much, so they give up.",
-  },
-  {
-    stage: "Follow-up",
-    text: "They do ask. The answer comes late, or never, and they go somewhere else.",
-  },
-] as const;
+const LEAK_STORIES: Record<AuditStage, string> = {
+  "Found on Google":
+    "Someone searches for what you do. A competitor shows up. You don't, or your listing looks half done.",
+  "What AI says about you":
+    "Someone asks an AI tool who to hire. It names your competitor, gets your details wrong, or knows nothing about you.",
+  "Social media":
+    "You post, but nobody ends up on your website. Or your accounts look and sound different from your site, so people don't recognise you.",
+  "Website that converts":
+    "They arrive, from an ad or on their own. They have questions nobody answers, so they look around and leave without applying.",
+  "Lead capture":
+    "They want to ask something. The form wants too much, so they give up.",
+  "Follow-up and booking":
+    "They do ask. The answer comes late, or never. Booking a time is a chore. They go somewhere else.",
+};
 
 export function ProblemSection() {
   return (
@@ -43,9 +42,9 @@ export function ProblemSection() {
         </>
       }
     >
-      <ol className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        {LEAKS.map((leak, index) => (
-          <li key={leak.stage}>
+      <ol className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {AUDIT_STAGES.map((stage, index) => (
+          <li key={stage}>
             <Reveal delay={index * 0.06} className="h-full">
               <div className="h-full border border-[#F4F4F0]/25 p-5">
                 <p
@@ -56,12 +55,12 @@ export function ProblemSection() {
                 </p>
                 <h3
                   className="mt-2 uppercase"
-                  style={{ ...DISPLAY_STYLE, fontSize: "1.9rem", lineHeight: 0.95 }}
+                  style={{ ...DISPLAY_STYLE, fontSize: "1.6rem", lineHeight: 0.95 }}
                 >
-                  {leak.stage}
+                  {stage}
                 </h3>
                 <p className="mt-3 text-base leading-relaxed text-[#F4F4F0]/80">
-                  {leak.text}
+                  {LEAK_STORIES[stage]}
                 </p>
               </div>
             </Reveal>
@@ -73,11 +72,34 @@ export function ProblemSection() {
 }
 
 export function GuideSection() {
+  const metricText = visibleText(PROOF.ownSiteMetric.text);
+  const metricPeriod = visibleText(PROOF.ownSiteMetric.period);
+  const ownSiteMetric = metricText
+    ? [metricText, metricPeriod].filter(Boolean).join(" ")
+    : "";
+
+  const facts: { title: string; text: string; metric?: string }[] = [
+    {
+      title: "Creaholic",
+      text: "I rebuilt the website of this Swiss invention studio in Biel, and I'm building its marketing system.",
+    },
+    {
+      title: "My own site",
+      text: "I rebuilt my own website, and it started converting. I use my own advice first.",
+      metric: ownSiteMetric,
+    },
+    {
+      title: "Audits already written",
+      text: "I've written full digital-presence audits for two more Swiss companies, so the format is tested.",
+    },
+  ];
+
   return (
     <Section
       tone="light"
       label="YOUR GUIDE"
       title="I'm Mari Miavka. I look at a business the way a developer looks at a product."
+      aside={<AboutHeroStyleCarousel />}
       intro={
         <>
           <p>
@@ -93,20 +115,7 @@ export function GuideSection() {
       }
     >
       <ul className="grid gap-4 md:grid-cols-3">
-        {[
-          {
-            title: "Creaholic",
-            text: "I rebuilt the website of this Swiss invention studio in Biel, and I'm building its marketing system.",
-          },
-          {
-            title: "My own site",
-            text: "I rebuilt my own website, and its conversion improved. I use my own advice first.",
-          },
-          {
-            title: "Software meets marketing",
-            text: "Strategy and execution live together, so the plans I write are plans I can also build.",
-          },
-        ].map((fact, index) => (
+        {facts.map((fact, index) => (
           <li key={fact.title}>
             <Reveal delay={index * 0.06} className="h-full">
               <div className="h-full border border-[#161515]/25 p-5">
@@ -119,6 +128,14 @@ export function GuideSection() {
                 <p className="mt-3 text-base leading-relaxed text-[#161515]/80">
                   {fact.text}
                 </p>
+                {fact.metric ? (
+                  <p
+                    className="mt-3 border-t-2 border-[#D0320E] pt-2 text-[12px] uppercase text-[#161515]"
+                    style={MONO_STYLE}
+                  >
+                    {fact.metric}
+                  </p>
+                ) : null}
               </div>
             </Reveal>
           </li>
@@ -137,19 +154,25 @@ export function GuideSection() {
   );
 }
 
+const STAGE_CHECKS: Record<AuditStage, string> = {
+  "Found on Google":
+    "Why people find you, and why they can't. What comes up when someone searches for what you do, and where your listing is missing, half done or wrong.",
+  "What AI says about you":
+    "What AI tools say about you, and why. Whether they recommend you, get facts wrong, or know nothing.",
+  "Social media":
+    "Whether your posts bring people to your website, and whether you look and sound the same everywhere.",
+  "Website that converts":
+    "Where visitors leave, from ads or on their own, which questions go unanswered, and what stops them from acting.",
+  "Lead capture": "Contact options and form friction.",
+  "Follow-up and booking": "How fast you answer, and booking friction.",
+};
+
 const STACK = [
+  ...AUDIT_STAGES.map((stage) => ({ name: stage, detail: STAGE_CHECKS[stage] })),
   {
-    name: "Digital presence and brand authority",
+    name: "Your status and how I rated it",
     detail:
-      "Search visibility, Google Business profile, reviews, directory consistency.",
-  },
-  {
-    name: "Website and landing page conversion",
-    detail: "Headline clarity, speed, mobile, calls to action, form friction.",
-  },
-  {
-    name: "Sales funnel and lead flow",
-    detail: "Lead capture, follow-up, booking friction.",
+      "Each stage gets an honest status: Leaking, Weak or Fine. I explain how I checked it, where I looked and what my criteria were. I also look at your language, who you speak to and who your customers are.",
   },
   {
     name: "Your top three fixes",
@@ -159,7 +182,7 @@ const STACK = [
     name: "A short video walkthrough",
     detail: "I show you each leak on screen, in your own data.",
   },
-] as const;
+];
 
 const VALUE_EQUATION = [
   {
@@ -172,7 +195,7 @@ const VALUE_EQUATION = [
   },
   {
     lever: "Time",
-    text: "You get answers before you spend on any fix. No long discovery phase.",
+    text: `You get your audit within ${AUDIT_DELIVERY_TIME}, before you spend on any fix.`,
   },
   {
     lever: "Effort",
@@ -243,6 +266,25 @@ export function StackSection() {
           </Reveal>
         ))}
       </dl>
+
+      <Reveal className="mt-12">
+        <div className="max-w-3xl border-l-4 border-[#D0320E] pl-5">
+          <p className="text-[11px] uppercase text-[#F4F4F0]/75" style={MONO_STYLE}>
+            [ WHY IT&apos;S FREE ]
+          </p>
+          <h3
+            className="mt-2 uppercase"
+            style={{ ...DISPLAY_STYLE, fontSize: "1.9rem", lineHeight: 0.95 }}
+          >
+            Why is it free?
+          </h3>
+          <p className="mt-3 text-lg leading-relaxed text-[#F4F4F0]/82">
+            I&apos;m building my case studies, so the first audits are free. You
+            get a real diagnostic of your business. If it helps, I&apos;ll ask
+            for an honest review. If it doesn&apos;t, you owe me nothing.
+          </p>
+        </div>
+      </Reveal>
     </Section>
   );
 }
@@ -295,6 +337,27 @@ export function PlanSection() {
         ))}
       </ol>
     </Section>
+  );
+}
+
+/** A black band between "who it's not for" and the quiz: what waiting costs. */
+export function StakesSection() {
+  return (
+    <div className="bg-[#161515] px-4 py-7 text-center text-[#F4F4F0] md:px-8 md:py-9 lg:px-12">
+      <Reveal className="mx-auto w-full max-w-3xl">
+        <p
+          className="uppercase"
+          style={{ ...DISPLAY_STYLE, fontSize: "clamp(1.1rem, 2vw, 1.6rem)", lineHeight: 1 }}
+        >
+          Every month you can&apos;t see the leak, you pay for traffic that
+          goes nowhere.
+        </p>
+        <p className="mt-3 text-sm leading-relaxed text-[#F4F4F0]/80 md:text-base">
+          Once you can see it, you decide what to fix, what to ignore, and who
+          to trust.
+        </p>
+      </Reveal>
+    </div>
   );
 }
 

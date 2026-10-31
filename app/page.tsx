@@ -4,10 +4,10 @@ import PersonalHero from "@/components/home/PersonalHero";
 import HomeNewsletterSignup from "@/components/home/HomeNewsletterSignup";
 import PersonalFooter from "@/components/home/PersonalFooter";
 import HomeArticlesSection from "@/components/home/HomeArticlesSection";
-import AboutTeaserSection from "@/components/home/AboutTeaserSection";
 import {
   GuideSection,
   NotForSection,
+  StakesSection,
   PlanSection,
   ProblemSection,
   StackSection,
@@ -48,11 +48,11 @@ export default async function Home() {
           <StackSection />
           <PlanSection />
           <ProofSection />
-          <AuditQuiz />
           <NotForSection />
+          <StakesSection />
+          <AuditQuiz />
           <HomeNewsletterSignup />
           <HomeArticlesSection articles={articles} />
-          <AboutTeaserSection />
         </div>
       </main>
       <PersonalFooter />

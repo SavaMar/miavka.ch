@@ -284,7 +284,7 @@ export default function PersonalHero() {
   return (
     <section
       ref={heroRef}
-      className="relative min-h-[calc(100dvh-58px)] overflow-hidden bg-[#F4F4F0] pt-6 md:min-h-[calc(100dvh-64px)] md:pt-8"
+      className="relative overflow-hidden bg-[#F4F4F0] pt-6 md:min-h-[calc(100dvh-64px)] md:pt-8"
     >
       {!reducedMotion ? (
         <canvas
@@ -304,14 +304,19 @@ export default function PersonalHero() {
         />
       )}
 
-      <div className="mx-auto flex min-h-[calc(100dvh-58px)] w-full max-w-[1680px] flex-col px-4 pb-12 pt-5 md:min-h-[calc(100dvh-64px)] md:px-8 md:pb-16 md:pt-7 lg:px-12 lg:pb-20">
-        <div className="relative z-10 mt-3 grid grid-cols-[1fr_2fr_1fr] gap-[15px] md:mt-5">
-          <motion.div {...enter(0, reducedMotion)} className="relative min-h-0 overflow-hidden bg-[#161515]/8">
+      <div className="mx-auto flex w-full max-w-[1680px] flex-col px-4 pb-10 pt-5 md:min-h-[calc(100dvh-64px)] md:px-8 md:pb-16 md:pt-7 lg:px-12 lg:pb-20">
+        {/* Phone: both portraits in a small row on top, the video full-bleed below.
+            md and up: portrait | video | portrait in one row. */}
+        <div className="relative z-10 mt-3 grid grid-cols-2 gap-[15px] md:mt-5 md:grid-cols-[1fr_2fr_1fr]">
+          <motion.div
+            {...enter(0, reducedMotion)}
+            className="relative col-start-1 row-start-1 aspect-[3/2] min-h-0 overflow-hidden bg-[#161515]/8 md:aspect-auto"
+          >
             <Image
               src={SIDE_IMAGES[0]}
               alt="Mari Miavka portrait"
               fill
-              sizes="25vw"
+              sizes="(min-width: 768px) 25vw, 50vw"
               className="object-cover grayscale contrast-125 brightness-95"
               style={{
                 filter: "grayscale(1) contrast(1.2) brightness(0.9)",
@@ -332,13 +337,13 @@ export default function PersonalHero() {
           <motion.div
             {...enter(0.06, reducedMotion)}
             style={reducedMotion ? undefined : { scale: frameScale, y: frameY }}
-            className="relative aspect-video origin-top overflow-hidden bg-[#161515]"
+            className="relative col-span-2 row-start-2 -mx-4 aspect-video origin-top overflow-hidden bg-[#161515] md:col-span-1 md:col-start-2 md:row-start-1 md:mx-0"
           >
             <Image
               src="/images/hero-photo.jpg"
               alt=""
               fill
-              sizes="50vw"
+              sizes="(min-width: 768px) 50vw, 100vw"
               className="object-cover opacity-80"
               style={{
                 filter: "grayscale(1) contrast(1.15) brightness(0.72)",
@@ -384,12 +389,15 @@ export default function PersonalHero() {
             </button>
           </motion.div>
 
-          <motion.div {...enter(0.12, reducedMotion)} className="relative min-h-0 overflow-hidden bg-[#161515]/8">
+          <motion.div
+            {...enter(0.12, reducedMotion)}
+            className="relative col-start-2 row-start-1 aspect-[3/2] min-h-0 overflow-hidden bg-[#161515]/8 md:col-start-3 md:aspect-auto"
+          >
             <Image
               src={SIDE_IMAGES[1]}
               alt="Mari Miavka portrait"
               fill
-              sizes="25vw"
+              sizes="(min-width: 768px) 25vw, 50vw"
               className="object-cover grayscale contrast-125 brightness-95"
               style={{
                 filter: "grayscale(1) contrast(1.2) brightness(0.9)",
@@ -429,9 +437,9 @@ export default function PersonalHero() {
 
         <motion.div
           {...enter(0.28, reducedMotion)}
-          className="relative z-10 mt-5 flex flex-col items-start gap-5 md:mt-6 md:flex-row md:items-center md:gap-8"
+          className="relative z-10 mt-5 flex flex-col items-stretch gap-5 md:mt-6 md:flex-row md:items-center md:gap-8"
         >
-          <Link href="#quiz" className={PRIMARY_BUTTON_CLASS} style={MONO_STYLE}>
+          <Link href="#quiz" className={`${PRIMARY_BUTTON_CLASS} w-full md:w-auto`} style={MONO_STYLE}>
             [ GET YOUR DIGITAL LEAK AUDIT → ]
           </Link>
           <p className="max-w-xl text-base leading-relaxed text-[#161515]/75">

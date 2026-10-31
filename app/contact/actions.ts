@@ -1,6 +1,6 @@
 "use server";
 
-import { createClient } from "@supabase/supabase-js";
+import { createSupabaseAdmin } from "@/lib/supabase-admin";
 
 export type ContactActionInput = {
   name: string;
@@ -42,18 +42,16 @@ export async function submitContactInquiry(
     return { ok: false, error: "Invalid email address." };
   }
 
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
   const tableName = process.env.SUPABASE_CONTACT_TABLE ?? "contact_submissions";
 
-  if (!supabaseUrl || !serviceRoleKey) {
+  const supabase = createSupabaseAdmin();
+  if (!supabase) {
     return {
       ok: false,
       error: "Supabase environment variables are not configured.",
     };
   }
 
-  const supabase = createClient(supabaseUrl, serviceRoleKey);
   const { error } = await supabase.from(tableName).insert({
     name,
     email,

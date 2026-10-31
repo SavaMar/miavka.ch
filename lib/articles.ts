@@ -65,6 +65,8 @@ export type ArticleFrontmatter = {
   translatedBy: "ai" | "human" | null;
   availableIn: string[];
   sections: ArticleSection[];
+  /** Set to false to hide the "If you want to do this together" block at the end. */
+  discoveryCta?: boolean;
 };
 
 /** ~200 words per minute; minimum 1 minute */
